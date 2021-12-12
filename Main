@@ -6,7 +6,8 @@ from pollini import polliniList
 
 def print_pollini():
     for p in polliniList:
-        print(f'Famiglia: {p.famiglia}, Nome: {p.nome}, Lettera: {p.lettera}, Tot: {p.tot}')
+        if p.tot > 0:
+            print(f'Famiglia: {p.famiglia}, Nome: {p.nome}, Lettera: {p.lettera}, Tot: {p.tot}')
 
 
 def set_tot_pollini(input_val):
@@ -25,17 +26,18 @@ def is_valid_chars(input_val):
 
 
 def write_to_file():
-    path = os.environ['HOME'] + "/Desktop/"
+    path = os.environ['USERPROFILE'] + ("/Desktop/")
     filename = date.today().strftime("%Y%m%d") + "_pollini_save.txt"
     f = open(os.path.join(path, filename), "a")
     for p in polliniList:
-        f.writelines(f'Famiglia: {p.famiglia}, Nome: {p.nome}, Lettera: {p.lettera}, Tot: {p.tot}\n')
+        if p.tot != 0:
+            f.writelines(f'{p.famiglia}, Tot: {p.tot}\n')
     f.close()
 
 
 if __name__ == '__main__':
     while True:
-        os.system('clear')
+        os.system('cls')
         user_input = input("Inserisci la stringa da valutare (\"exit\" per uscire dal programma):\n")
         if user_input == "exit":
             break
