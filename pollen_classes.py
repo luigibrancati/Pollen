@@ -1,40 +1,47 @@
 from tkinter import ttk, StringVar
+from __future__ import annotations
 
 
+# Pollen class is used both as a pollen representation and a tkinter frame
 class Pollini(ttk.Frame):
-    def __init__(self, master, fam, nome):
-        super().__init__(master)
+    """Class to manage different pollen types."""
+ 
+    def __init__(self: Pollini, master: ttk.Frame, fam: str, nome: str) -> None:
+        super().__init__(master) # Initialize the ttk.Frame class with a master frame
         self.master = master
+        self.famiglia = fam # Family
+        self.nome = nome # Name
+        self.tot = 0 # Total count
 
-        self.famiglia = fam
-        self.nome = nome
-        self.tot = 0
-
-        self.label = ttk.Label(self)
-        self.label.grid(column=0, row=0)
-        # Create the application variable.
+        self.label = ttk.Label(self) # Tkinter label to show relevant info
+        self.label.grid(column=0, row=0) # Position the label inside the Pollen frame
+        # Create a string variable using tkinter class StringVar
         self.contents = StringVar()
-        # Set it to some value.
+        # Set the variable value
         self.contents.set(f"{self.famiglia}: {self.tot}")
-        # Tell the entry widget to watch this variable.
+        # Set the label above to the variable value
         self.label["textvariable"] = self.contents
     
-    def add(self, event):
+    def add(self: Pollini, event) -> None:
+        """Callback function to increment pollen count."""
         self.tot += 1
 
-    def show(self, event):
+    def show(self: Pollini, event) -> None:
+        """Callback function to update the label text."""
         self.contents.set(f"{self.famiglia}: {self.tot}")
         self.label["textvariable"] = self.contents
 
     @classmethod
-    def generate_with_binding(cls, master, fam, nome, key):
-        pln = cls(master, fam, nome)
-        pln.master.bind(f"<{key}>", pln.add)
-        pln.master.bind(f"<{key}>", pln.show, add='+')
+    def generate_with_binding(cls: Pollini, master: ttk.Frame, fam: str, nome: str, key: str) -> Pollini:
+        """Class method used to generate a new pollen instance while at the same time binding it to a keyboard key."""
+        pln = cls(master, fam, nome) # Instantiate pollen object
+        pln.master.bind(f"<{key}>", pln.add) # Bind the key to increase the pollen count
+        pln.master.bind(f"<{key}>", pln.show, add='+') # Bind the key to also update the label value
         return pln
 
 
-def generate_bindings(master):
+def generate_bindings(master: ttk.Frame) -> None:
+    """Function to generate all bindings needed for the whole app."""
     padx = 10
     pady = 10
     Pollini.generate_with_binding(master, "Aceraceae", "Aceraceae", "Up").grid(column=0, row=0, padx=padx, pady=pady)
