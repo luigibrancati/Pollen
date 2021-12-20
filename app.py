@@ -2,6 +2,13 @@ from __future__ import annotations
 from tkinter import Toplevel, ttk, StringVar, Tk
 import pandas as pd
 import json
+import logging
+from datetime import datetime
+import os
+
+
+logging.basicConfig(filename=f'./logs/{datetime.now()}.log',
+                    level=logging.INFO)
 
 
 # Pollen class is used both as a pollen representation and a tkinter frame
@@ -53,12 +60,20 @@ class PollenFrame(ttk.Frame):
         self.master.bind(f"<{key}>", self.add)
         # Set the variable
         self.key_bind.set(f"{key}")
+        logging.info(f"Changed binding of {self.nome} to {key}")
 
     @property
     def __dict__(self) -> dict:
         return {"famiglia": self.famiglia,
                 "nome": self.nome,
                 "conteggio": self.tot}
+
+    def __str__(self):
+        return f"""{{
+            "famiglia": {self.famiglia},
+            "nome": {self.nome},
+            "conteggio": {self.tot}
+        }}"""
 
     @classmethod
     def generate_with_binding(cls: PollenFrame,
@@ -74,6 +89,7 @@ class PollenFrame(ttk.Frame):
         pln = cls(master, fam, nome, count)
         # Bind the key to increase the pollen count
         pln.set_binding(key)
+        logging.info(f"Generated pollen {nome} bound to key {key}")
         return pln
 
 
@@ -103,30 +119,39 @@ class EntryFrame(Toplevel):
         self.function_button.grid(row=1, column=1, padx=5, pady=5)
 
     def _save(self) -> None:
-        id = self.entry.get()
-        if id:
-            self.data.to_csv(f'./Vetrino_{id}.csv', sep=';', index=False)
-            self.destroy()
-        else:
-            print("Error, id not set.")
-
-    def _load(self) -> None:
-        bindings = ["Up", "Down", "Left", "Right", "a", "b",
-                    "c", "d", "e", "f", "g", "h", "i", "j",
-                    "k", "l", "m", "n", "o", "p", "q", "r",
-                    "s", "t", "u", "v"]
+        logging.info("Save data to csv file.")
         id = self.entry.get()
         if id:
             filename = f'./Vetrino_{id}.csv'
-            df = pd.read_csv(filename, sep=';', index_col=False)
-            vals = list(df.T.to_dict().values())
-            self.master.clear()
-            self.master.add_pollens(
-                [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
-            )
+            self.data.to_csv(filename, sep=';', index=False)
+            logging.info(f"Finished saving data to csv file {os.path.abspath(filename)}.")
             self.destroy()
         else:
-            print("Error, id not set.")
+            logging.error("Error, id not set.")
+
+    def _load(self) -> None:
+        logging.info("Load data from csv file.")
+        bindings = ["Up", "Down", "Left", "Right", "a", "b",
+                    "c", "d", "e", "f", "g", "h", "i", "j",
+                    "k", "l", "m", "n", "o", "p", "q", "r",
+                    "s", "t", "u", "v", "x", "y", "w", "z"]
+        id = self.entry.get()
+        if id:
+            try:
+                filename = f'./Vetrino_{id}.csv'
+                df = pd.read_csv(filename, sep=';', index_col=False)
+                vals = list(df.T.to_dict().values())
+                self.master.clear()  # Clear previous stuff
+                self.master.add_pollens(
+                    [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
+                )
+                logging.info(f"Finished loading data from csv file {os.path.abspath(filename)}.")
+            except FileNotFoundError:
+                logging.error("File not found.")
+            finally:
+                self.destroy()
+        else:
+            logging.error("Error, id not set.")
 
 
 class Application(Tk):
@@ -140,6 +165,9 @@ class Application(Tk):
         self.cols = cols
         self.pollen_frames = []
 
+        # Reset count button
+        self.button_reset_count = ttk.Button(self, text="Reset count",
+                                             command=self._reset_count)
         # Load button
         self.button_load = ttk.Button(self, text="Load",
                                       command=self._load)
@@ -149,9 +177,6 @@ class Application(Tk):
         # Quit button
         self.button_quit = ttk.Button(self, text="Quit",
                                       command=self.destroy)
-        # Reset count button
-        self.button_reset_count = ttk.Button(self, text="Reset count",
-                                             command=self._reset_count)
 
     def _draw_grid(self):
         # Place pollens in frame master
@@ -169,14 +194,27 @@ class Application(Tk):
         self.button_quit.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5)
 
     def _reset_count(self):
+        logging.info("Reset pollen count.")
         for p in self.pollen_frames:
             p.reset_count()
+
+    def _load(self) -> None:
+        id_frame = EntryFrame(self, save=False)
+        id_frame.title("Load")
+        id_frame.mainloop()
+
+    def _save(self) -> None:
+        id_frame = EntryFrame(self)
+        id_frame.title("Save")
+        id_frame.data = pd.DataFrame([vars(pln) for pln in self.pollen_frames])
+        id_frame.mainloop()
 
     def clear(self):
         self.pollen_frames = []
 
     def add_pollens(self, pollens: list[dict[str, str, str]]) -> None:
         """Function to generate all bindings needed for the whole app."""
+        logging.info("Add pollens.")
         for pollen in pollens:
             try:
                 pln = PollenFrame.generate_with_binding(self,
@@ -189,27 +227,23 @@ class Application(Tk):
                                                         pollen['famiglia'],
                                                         pollen['nome'],
                                                         pollen['key'])
+            logging.info(f"Added pollen {pln}")
             self.pollen_frames.append(pln)
+        # We redraw the grid
+        # This is need when we need to add new pollens later
+        logging.info("Finished adding pollens.")
         self._draw_grid()
 
     def add_standard_pollens(self):
+        logging.info("Add standard pollens.")
         with open('./standard_pollen_mapping.json') as file:
             self.add_pollens(json.load(file))
+        logging.info("Finished adding standard pollens.")
         self._draw_grid()
-
-    def _save(self) -> None:
-        id_frame = EntryFrame(self)
-        id_frame.title("Save")
-        id_frame.data = pd.DataFrame([vars(pln) for pln in self.pollen_frames])
-        id_frame.mainloop()
-
-    def _load(self) -> None:
-        id_frame = EntryFrame(self, save=False)
-        id_frame.title("Load")
-        id_frame.mainloop()
 
     @classmethod
     def generate_starting_frame(cls, cols: int = 5) -> Application:
         app = Application(cols)
         app.add_standard_pollens()
+        logging.info("Application generated.")
         return app
