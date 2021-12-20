@@ -7,7 +7,9 @@ from datetime import datetime
 import os
 
 
-logging.basicConfig(filename=f'./logs/{datetime.now()}.log',
+if not os.path.exists("../logs"):
+    os.makedirs("../logs")
+logging.basicConfig(filename=f'../logs/{datetime.now()}.log',
                     level=logging.INFO)
 
 
@@ -96,9 +98,9 @@ class PollenFrame(ttk.Frame):
 class EntryFrame(Toplevel):
     """This class opens a new window used to save/load data."""
 
-    def __init__(self, master: ttk.Frame | Tk, save: bool = True,
-                 *args, **kwargs) -> None:
-        super().__init__(master, *args, **kwargs)
+    def __init__(self, master: ttk.Frame | Tk,
+                 save: bool = True) -> None:
+        super().__init__(master, takefocus=True)
         self.data = None
         self.master = master
         self.entry = ttk.Entry(self, takefocus=True)
@@ -117,6 +119,14 @@ class EntryFrame(Toplevel):
             self.function_button = ttk.Button(self, text="Load",
                                               command=self._load)
         self.function_button.grid(row=1, column=1, padx=5, pady=5)
+        self.update_position()
+
+    def update_position(self):
+        x = self.master.winfo_x()
+        y = self.master.winfo_y()
+        w = self.master.winfo_width()
+        h = self.master.winfo_height()
+        self.geometry("+%d+%d" % (x + w//3, y + h//3))
 
     def _save(self) -> None:
         logging.info("Save data to csv file.")
@@ -124,7 +134,9 @@ class EntryFrame(Toplevel):
         if id:
             filename = f'./Vetrino_{id}.csv'
             self.data.to_csv(filename, sep=';', index=False)
-            logging.info(f"Finished saving data to csv file {os.path.abspath(filename)}.")
+            logging.info(f"""\
+            Finished saving to csv file {os.path.abspath(filename)}.
+            """)
             self.destroy()
         else:
             logging.error("Error, id not set.")
@@ -145,7 +157,9 @@ class EntryFrame(Toplevel):
                 self.master.add_pollens(
                     [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
                 )
-                logging.info(f"Finished loading data from csv file {os.path.abspath(filename)}.")
+                logging.info(f"""\
+                Finished loading from csv file {os.path.abspath(filename)}.
+                """)
             except FileNotFoundError:
                 logging.error("File not found.")
             finally:
