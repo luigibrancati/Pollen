@@ -1,10 +1,10 @@
 *test*
 __pycache__
 Vetrino_*
-.vscode
+.vscode/
 *.log
 .idea/
-logs/
+.logs/
 dist/
 build/
 data/

@@ -4,9 +4,9 @@ import logging
 import os
 
 
-if not os.path.exists("./logs"):
-    os.makedirs("./logs")
-logging.basicConfig(filename=f'./logs/{datetime.now()}.log',
+if not os.path.exists("./.logs"):
+    os.makedirs("./.logs")
+logging.basicConfig(filename=f'./.logs/{datetime.now()}.log',
                     level=logging.INFO)
 
 
