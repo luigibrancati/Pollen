@@ -10,7 +10,7 @@ To build the executable to be run on Windows (10 and above), you must be on Wind
 pyinstaller.exe -c -w -i .\icons\pollen.ico --onefile -n Pollen main.py
 ```
 
-By default, the EXE will be built inside the `./dist` folder. It can be distributed as it is.
+By default, the executable `Pollen.exe` will be built inside the `./dist` folder. It can be distributed as it is.
 
 ### To do
 
