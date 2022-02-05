@@ -4,7 +4,7 @@ import logging
 from typing import TypeVar, Dict, List
 from frames import EntryFrame, PollenFrame
 from tkinter import ttk, Tk
-
+from pollen import STANDARD_POLLEN
 
 A = TypeVar("A", bound="Application")
 
@@ -92,8 +92,7 @@ class Application(Tk):
 
     def add_standard_pollens(self):
         logging.info("Adding all standard pollens.")
-        with open('./standard_pollen_mapping.json') as file:
-            self.add_pollens(json.load(file))
+        self.add_pollens(STANDARD_POLLEN)
         logging.info("Finished adding standard pollens.")
         self._draw_grid()
 
