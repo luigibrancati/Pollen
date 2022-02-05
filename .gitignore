@@ -4,3 +4,8 @@ Vetrino_*
 .vscode
 *.log
 .idea/
+logs/
+dist/
+build/
+data/
+*.spec
