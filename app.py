@@ -4,7 +4,7 @@ import logging
 from typing import TypeVar, Dict, List
 from frames import EntryFrame, PollenFrame
 from tkinter import ttk, Tk
-from pollen import STANDARD_POLLEN
+from pollen_class import STANDARD_POLLEN
 
 A = TypeVar("A", bound="Application")
 

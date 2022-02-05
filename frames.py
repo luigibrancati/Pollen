@@ -1,4 +1,4 @@
-from pollen import Pollen
+from pollen_class import Pollen
 from tkinter import Toplevel, ttk, StringVar, Tk
 from typing import TypeVar, Union
 import pandas as pd
