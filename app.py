@@ -1,10 +1,10 @@
 import pandas as pd
-import json
 import logging
 from typing import TypeVar, Dict, List
 from frames import EntryFrame, PollenFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLEN
+
 
 A = TypeVar("A", bound="Application")
 

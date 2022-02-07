@@ -7,7 +7,7 @@ import os
 if not os.path.exists("./.logs"):
     os.makedirs("./.logs")
 logging.basicConfig(filename=f"./.logs/log_{datetime.now().strftime('%Y%m%dT%H%M%S')}.log",
-                    level=logging.INFO)
+                    level=logging.WARNING)
 
 
 if __name__ == '__main__':

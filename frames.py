@@ -1,5 +1,6 @@
+from config import TLW_HEIGHT, TLW_WIDTH
 from pollen_class import Pollen
-from tkinter import Toplevel, ttk, StringVar, Tk
+from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
 from typing import TypeVar, Union
 import pandas as pd
 import os
@@ -22,9 +23,7 @@ class PollenFrame(ttk.Frame):
         # Initialize the ttk.Frame class with a master frame
         super().__init__(master)
         self.master = master
-
         self.pollen = Pollen(fam, nome, count)
-
         # Tkinter labels to show relevant info
         self.label = ttk.Label(self)
         self.label.grid(column=1, row=0, padx=5)
@@ -89,12 +88,13 @@ class EntryFrame(Toplevel):
         super().__init__(master, takefocus=True)
         self.data = None
         self.master = master
+        self.init_dir = "."
+        self._grid_config()
         self.entry = ttk.Entry(self, takefocus=True)
-        self.entry.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
-        # Cancel button
-        self.button_cancel = ttk.Button(self, text="Cancel",
-                                        command=self.destroy)
-        self.button_cancel.grid(row=1, column=2, padx=5, pady=5)
+        self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="EW")
+        # Browse button
+        self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file)
+        self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="E")
 
         if save:
             # Save button
@@ -104,10 +104,17 @@ class EntryFrame(Toplevel):
             # Load button
             self.function_button = ttk.Button(self, text="Load",
                                               command=self._load)
-        self.function_button.grid(row=1, column=1, padx=5, pady=5)
-        self.update_position()
+        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
+        self._update_position()
 
-    def update_position(self):
+    def _grid_config(self):
+        self.geometry(f"{TLW_WIDTH}x{TLW_HEIGHT}")
+        self.columnconfigure(0, weight=3)
+        self.columnconfigure(1, weight=0)
+        self.columnconfigure(2, weight=0)
+        self.resizable(0, 0)
+
+    def _update_position(self):
         x = self.master.winfo_x()
         y = self.master.winfo_y()
         w = self.master.winfo_width()
@@ -118,14 +125,13 @@ class EntryFrame(Toplevel):
         logging.info("Save data to csv file.")
         if not os.path.exists("./data"):
             os.makedirs("./data")
-        id = self.entry.get()
-        if id:
-            filename = f'./data/Vetrino_{id}.csv'
+        filename = self.entry.get()
+        if filename is not None and '.csv' in filename:
             self.data.to_csv(filename, sep=';', index=False)
             logging.info(f"Finished saving to csv file {os.path.abspath(filename)}.")
             self.destroy()
         else:
-            logging.error("Error, id not set.")
+            logging.error("Error, wrong filename.")
 
     def _load(self) -> None:
         logging.info("Load data from csv file.")
@@ -133,10 +139,9 @@ class EntryFrame(Toplevel):
                     "c", "d", "e", "f", "g", "h", "i", "j",
                     "k", "l", "m", "n", "o", "p", "q", "r",
                     "s", "t", "u", "v", "x", "y", "w", "z"]
-        id = self.entry.get()
-        if id:
+        filename = self.entry.get()
+        if filename is not None and '.csv' in filename:
             try:
-                filename = f'./data/Vetrino_{id}.csv'
                 df = pd.read_csv(filename, sep=';', index_col=False)
                 vals = list(df.T.to_dict().values())
                 logging.debug(f"Loaded pandas dataframe with data {vals}")
@@ -145,9 +150,20 @@ class EntryFrame(Toplevel):
                     [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
                 )
                 logging.info(f"Finished loading from csv file {os.path.abspath(filename)}.")
-            except FileNotFoundError:
+            except FileNotFoundError as e:
                 logging.error("File not found.")
+                raise e
             finally:
                 self.destroy()
         else:
-            logging.error("Error, id not set.")
+            logging.error("Error, wrong filename.")
+
+    def _select_file(self):
+        filename = filedialog.askopenfilename(
+            initialdir = self.init_dir,
+            title = "Select a File",
+            filetypes = (("CSV files", "*.csv"), ("all files", "*.*"))
+        )
+        self.init_dir = os.path.dirname(os.path.abspath(filename))
+        self.entry.delete(0, "end")
+        self.entry.insert(0, os.path.abspath(filename))
