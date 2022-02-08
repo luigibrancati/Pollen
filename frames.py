@@ -5,6 +5,7 @@ from typing import TypeVar, Union
 import pandas as pd
 import os
 import logging
+from abc import ABC, abstractmethod
 
 
 PF = TypeVar("PF", bound="PollenFrame")
@@ -80,11 +81,10 @@ class PollenFrame(ttk.Frame):
         return pln
 
 
-class EntryFrame(Toplevel):
+class EntryFrame(Toplevel, ABC):
     """This class manages the window used to save/load data."""
 
-    def __init__(self, master: Union[ttk.Frame, Tk],
-                 save: bool = True) -> None:
+    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master, takefocus=True)
         self.data = None
         self.master = master
@@ -95,16 +95,6 @@ class EntryFrame(Toplevel):
         # Browse button
         self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file)
         self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="E")
-
-        if save:
-            # Save button
-            self.function_button = ttk.Button(self, text="Save",
-                                              command=self._save)
-        else:
-            # Load button
-            self.function_button = ttk.Button(self, text="Load",
-                                              command=self._load)
-        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
         self._update_position()
 
     def _grid_config(self):
@@ -121,6 +111,26 @@ class EntryFrame(Toplevel):
         h = self.master.winfo_height()
         self.geometry("+%d+%d" % (x + w//3, y + h//3))
 
+    @abstractmethod
+    def _select_file(self):
+        pass
+
+
+class SaveFrame(EntryFrame):
+    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
+        super().__init__(master)
+        self.function_button = ttk.Button(self, text="Save", command=self._save)
+        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
+
+    def _select_file(self):
+        dirname = filedialog.askdirectory(
+            initialdir=self.init_dir,
+            title="Select a Directory"
+        )
+        self.init_dir = dirname
+        self.entry.delete(0, "end")
+        self.entry.insert(0, dirname)
+
     def _save(self) -> None:
         logging.info("Save data to csv file.")
         if not os.path.exists("./data"):
@@ -132,6 +142,23 @@ class EntryFrame(Toplevel):
             self.destroy()
         else:
             logging.error("Error, wrong filename.")
+
+
+class LoadFrame(EntryFrame):
+    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
+        super().__init__(master)
+        self.function_button = ttk.Button(self, text="Load", command=self._load)
+        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
+
+    def _select_file(self):
+        filename = filedialog.askopenfilename(
+            initialdir=self.init_dir,
+            title="Select a File",
+            filetypes=(("CSV files", "*.csv"), ("all files", "*.*"))
+        )
+        self.init_dir = os.path.dirname(os.path.abspath(filename))
+        self.entry.delete(0, "end")
+        self.entry.insert(0, os.path.abspath(filename))
 
     def _load(self) -> None:
         logging.info("Load data from csv file.")
@@ -157,13 +184,3 @@ class EntryFrame(Toplevel):
                 self.destroy()
         else:
             logging.error("Error, wrong filename.")
-
-    def _select_file(self):
-        filename = filedialog.askopenfilename(
-            initialdir = self.init_dir,
-            title = "Select a File",
-            filetypes = (("CSV files", "*.csv"), ("all files", "*.*"))
-        )
-        self.init_dir = os.path.dirname(os.path.abspath(filename))
-        self.entry.delete(0, "end")
-        self.entry.insert(0, os.path.abspath(filename))

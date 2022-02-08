@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 from typing import TypeVar, Dict, List
-from frames import EntryFrame, PollenFrame
+from frames import SaveFrame, LoadFrame, PollenFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLEN
 
@@ -54,12 +54,12 @@ class Application(Tk):
             p.reset()
 
     def _load(self) -> None:
-        id_frame = EntryFrame(self, save=False)
+        id_frame = LoadFrame(self)
         id_frame.title("Load")
         id_frame.mainloop()
 
     def _save(self) -> None:
-        id_frame = EntryFrame(self)
+        id_frame = SaveFrame(self)
         id_frame.title("Save")
         id_frame.data = pd.DataFrame([vars(plnf.pollen) for plnf in self.pollen_frames])
         id_frame.mainloop()
