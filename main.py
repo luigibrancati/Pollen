@@ -22,13 +22,17 @@ if __name__ == '__main__':
     custom_logger.setLevel(logging.DEBUG)
     custom_logger.info("Starting app")
 
-    app = Application.generate_starting_frame()  # Generate app
+    # Generate app
+    app = Application.generate_starting_frame()
 
     # Custom styles
     style = ttk.Style(app)
     style.configure("Generic.TLabel", padding=5, font=(_FONT, 10))
-    style.configure("BindKey.TLabel", padding=5, borderwidth=3, relief="raised", font=(_FONT, 10))
     style.configure("Generic.TButton", padding=5, font=(_FONT, 10))
+    style.configure("Generic.TEntry", foreground="black", background="white", padding=5, font=(_FONT, 11))
+    style.configure("BindKey.TLabel", padding=5, borderwidth=3, relief="raised", font=(_FONT, 10))
+    style.configure("Help.TButton", padding=5, font=(_FONT, 10), width=2)
     style.configure("Help.TLabel", justify='left', relief="groove", foreground="black", background="white", padding=10, font=(_FONT, 11))
 
-    app.mainloop()  # Main event loop
+    # Main event loop
+    app.mainloop()

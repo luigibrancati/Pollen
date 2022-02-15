@@ -4,7 +4,7 @@ from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLENS
-from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _FONT
+from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY
 from collections import deque
 
 custom_logger = logging.getLogger(name='pollen_logger')
@@ -29,26 +29,16 @@ class Application(Tk):
         # whereas the app orchestrate their turns
         self.undo_stack = deque()
         self.redo_stack = deque()
-        # Reset count button
-        self.button_reset_count = ttk.Button(
-            self, text="Reset count", command=self._reset_count, style="Generic.TButton"
-        )
-        # Load button
-        self.button_load = ttk.Button(
-            self, text="Load", command=self._load, style="Generic.TButton"
-        )
-        # Save button
-        self.button_save = ttk.Button(
-            self, text="Save", command=self._save, style="Generic.TButton"
-        )
-        # Quit button
-        self.button_quit = ttk.Button(
-            self, text="Quit", command=self.destroy, style="Generic.TButton"
-        )
-        # Help button
-        self.button_help = ttk.Button(
-            self, text="?", command=self._help, style="Generic.TButton"
-        )
+        # Add buttons inside a separate Frame
+        self.button_frame = ttk.Frame(self)
+        # Buttons: Reset count, Load, Save, Quit, Help
+        self.buttons = [
+            ttk.Button(self.button_frame, text="Reset count", command=self._reset_count, style="Generic.TButton"),
+            ttk.Button(self.button_frame, text="Load", command=self._load, style="Generic.TButton"),
+            ttk.Button(self.button_frame, text="Save", command=self._save, style="Generic.TButton"),
+            ttk.Button(self.button_frame, text="Quit", command=self.destroy, style="Generic.TButton"),
+            ttk.Button(self.button_frame, text="?", command=self._help, style="Help.TButton")
+        ]
         # Undo and Redo bindings
         self.bind(f"{_UNDO_KEY}", self.undo)
         self.bind(f"{_REDO_KEY}", self.redo)
@@ -74,12 +64,9 @@ class Application(Tk):
             col = i % self.cols
             row = i // self.cols + 1
             pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
-        n_plns = len(self.pollen_frames)
-        self.button_reset_count.grid(column=self.cols-5, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_load.grid(column=self.cols-4, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_save.grid(column=self.cols-3, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_quit.grid(column=self.cols-2, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_help.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_frame.grid(column=0, row=row+1, columnspan=self.cols, padx=10, pady=10, sticky="e")
+        for i, button in enumerate(self.buttons):
+            button.grid(column=i, row=0, padx=5, sticky="e")
 
     def _reset_count(self):
         custom_logger.info("Reset pollen count and stacks.")

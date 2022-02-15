@@ -107,7 +107,7 @@ class EntryFrame(Toplevel, ABC):
         self.master = master
         self.init_dir = "."
         self._grid_config()
-        self.entry = ttk.Entry(self, takefocus=True)
+        self.entry = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
         self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="EW")
         # Browse button
         self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file, style="Generic.TButton")
