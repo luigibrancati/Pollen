@@ -1,3 +1,4 @@
+from collections import deque
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
@@ -25,6 +26,11 @@ class PollenFrame(ttk.Frame):
         super().__init__(master)
         self.master = master
         self.pollen = Pollen(fam, nome, count)
+        # Stacks for the undo/redo functionality
+        # These stacks store the previous states of the Pollen inside this PollenFrame
+        # These are used to revert the state of the PollenFrame
+        self.undo_stack = deque()
+        self.redo_stack = deque()
         # Tkinter labels to show relevant info
         self.label = ttk.Label(self)
         self.label.grid(column=1, row=0, padx=5)
@@ -37,29 +43,40 @@ class PollenFrame(ttk.Frame):
         self.contents = StringVar()
         self.key_bind = StringVar()
         # Set the variable value
-        self.update_contents()
+        self._update_contents()
         self.key_bind.set("")
         # Set the label above to the variable value
         self.label["textvariable"] = self.contents
         self.label_binding["textvariable"] = self.key_bind
         logging.debug(f"Created frame for pollen {self.pollen.nome}")
 
-    def update_contents(self) -> None:
+    def _update_contents(self) -> None:
         self.contents.set(self.pollen.short_str())
 
     def add(self, event) -> None:
         """Callback function to increment pollen count."""
-        self.master._add_to_undo(dict(self.pollen.__dict__))
+        self.undo_stack.append(dict(self.pollen.__dict__))
         self.pollen.add()
-        self.update_contents()
+        self._update_contents()
+        self.event_generate("<<Changed>>", when="head")
 
     def reset(self):
+        self.undo_stack = deque()
+        self.redo_stack = deque()
         self.pollen.reset()
-        self.update_contents()
+        self._update_contents()
 
     def set_pollen(self, pollen: Pollen):
         self.pollen = pollen
-        self.update_contents()
+        self._update_contents()
+
+    def undo(self):
+        self.redo_stack.append(dict(self.pollen.__dict__))
+        self.set_pollen(Pollen(**self.undo_stack.pop()))
+
+    def redo(self):
+        self.undo_stack.append(dict(self.pollen.__dict__))
+        self.set_pollen(Pollen(**self.redo_stack.pop()))
 
     def set_binding(self, key: str) -> None:
         # Bind the key to increase the pollen count

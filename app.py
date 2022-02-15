@@ -25,6 +25,10 @@ class Application(Tk):
         # A list to keep all pollen frames
         self.pollen_frames = []
         # Stacks to implement the undo and redo functionality
+        # These stacks don't actually keep the states of the pollen counts
+        # but only references to the widget that changed
+        # This way, the PollenFrame manage the undo/redo individually
+        # whereas the app orchestrate their turns
         self.undo_stack = deque()
         self.redo_stack = deque()
         # Reset count button
@@ -42,12 +46,13 @@ class Application(Tk):
         # Undo and Redo bindings
         self.bind("1", self.undo)
         self.bind("2", self.redo)
+        self.bind("<<Changed>>", lambda event: self._add_to_undo(event.widget))
 
-    def _add_to_undo(self, state: Dict):
-        self.undo_stack.append(state)
+    def _add_to_undo(self, widget_ref):
+        self.undo_stack.append(widget_ref)
 
-    def _add_to_redo(self, state: Dict):
-        self.redo_stack.append(state)
+    def _add_to_redo(self, widget_ref):
+        self.redo_stack.append(widget_ref)
 
     def _grid_config(self):
         self.geometry(f"{_WIDTH}x{_HEIGHT}")
@@ -70,7 +75,9 @@ class Application(Tk):
         self.button_quit.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5, sticky="e")
 
     def _reset_count(self):
-        logging.info("Reset pollen count.")
+        logging.info("Reset pollen count and stacks.")
+        self.undo_stack = deque()
+        self.redo_stack = deque()
         for p in self.pollen_frames:
             p.reset()
 
@@ -87,21 +94,17 @@ class Application(Tk):
 
     def undo(self, event) -> None:
         try:
-            old_state = Pollen(**self.undo_stack.pop())
-            for pf in self.pollen_frames:
-                if pf.pollen.nome == old_state.nome:
-                    self._add_to_redo(dict(pf.pollen.__dict__))
-                    pf.set_pollen(old_state)
+            widget = self.undo_stack.pop()
+            self._add_to_redo(widget)
+            widget.undo()
         except IndexError as e:
             logging.info(f"{e}")
 
     def redo(self, event) -> None:
         try:
-            new_state = Pollen(**self.redo_stack.pop())
-            for pf in self.pollen_frames:
-                if pf.pollen.nome == new_state.nome:
-                    self._add_to_undo(dict(pf.pollen.__dict__))
-                    pf.set_pollen(new_state)
+            widget = self.redo_stack.pop()
+            self._add_to_undo(widget)
+            widget.redo()
         except IndexError as e:
             logging.info(f"{e}")
 
