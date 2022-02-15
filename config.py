@@ -4,3 +4,4 @@ _TLW_HEIGHT = 40
 _TLW_WIDTH = 340
 _UNDO_KEY = '1'
 _REDO_KEY = '2'
+_FONT = "Arial"

@@ -1,10 +1,10 @@
 import pandas as pd
 import logging
 from typing import TypeVar, Dict, List
-from frames import SaveFrame, LoadFrame, PollenFrame
+from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLENS
-from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY
+from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _FONT
 from collections import deque
 
 custom_logger = logging.getLogger(name='pollen_logger')
@@ -33,14 +33,21 @@ class Application(Tk):
         self.button_reset_count = ttk.Button(self, text="Reset count",
                                              command=self._reset_count)
         # Load button
-        self.button_load = ttk.Button(self, text="Load",
-                                      command=self._load)
+        self.button_load = ttk.Button(
+            self, text="Load", command=self._load
+        )
         # Save button
-        self.button_save = ttk.Button(self, text="Save",
-                                      command=self._save)
+        self.button_save = ttk.Button(
+            self, text="Save", command=self._save
+        )
         # Quit button
-        self.button_quit = ttk.Button(self, text="Quit",
-                                      command=self.destroy)
+        self.button_quit = ttk.Button(
+            self, text="Quit", command=self.destroy
+        )
+        # Help button
+        self.button_help = ttk.Button(
+            self, text="?", command=self._help
+        )
         # Undo and Redo bindings
         self.bind(f"{_UNDO_KEY}", self.undo)
         self.bind(f"{_REDO_KEY}", self.redo)
@@ -67,10 +74,11 @@ class Application(Tk):
             row = i // self.cols + 1
             pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
         n_plns = len(self.pollen_frames)
-        self.button_reset_count.grid(column=self.cols-4, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_load.grid(column=self.cols-3, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_save.grid(column=self.cols-2, row=n_plns+1, padx=5, pady=5, sticky="e")
-        self.button_quit.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_reset_count.grid(column=self.cols-5, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_load.grid(column=self.cols-4, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_save.grid(column=self.cols-3, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_quit.grid(column=self.cols-2, row=n_plns+1, padx=5, pady=5, sticky="e")
+        self.button_help.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5, sticky="e")
 
     def _reset_count(self):
         custom_logger.info("Reset pollen count and stacks.")
@@ -78,6 +86,11 @@ class Application(Tk):
         self.redo_stack = deque()
         for p in self.pollen_frames:
             p.reset()
+
+    def _help(self) -> None:
+        help_frame = HelpFrame(self)
+        help_frame.title("Help")
+        help_frame.mainloop()
 
     def _load(self) -> None:
         id_frame = LoadFrame(self)

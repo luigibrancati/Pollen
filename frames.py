@@ -1,5 +1,5 @@
 from collections import deque
-from config import _TLW_HEIGHT, _TLW_WIDTH
+from config import _TLW_HEIGHT, _TLW_WIDTH, _UNDO_KEY, _REDO_KEY
 from pollen_class import Pollen
 from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
 from typing import TypeVar, Union
@@ -33,13 +33,12 @@ class PollenFrame(ttk.Frame):
         self.undo_stack = deque()
         self.redo_stack = deque()
         # Tkinter labels to show relevant info
-        self.label = ttk.Label(self)
-        self.label.grid(column=1, row=0, padx=5)
-        self.label_binding = ttk.Label(self,
-                                       borderwidth=3,
-                                       relief="raised",
-                                       padding=5)
+        self.label_binding = ttk.Label(
+            self, borderwidth=3, relief="raised", padding=5
+        )
         self.label_binding.grid(column=0, row=0, padx=5)
+        self.label = ttk.Label(self, padding=5)
+        self.label.grid(column=1, row=0, padx=5)
         # Create a string variable using tkinter class StringVar
         self.contents = StringVar()
         self.key_bind = StringVar()
@@ -140,6 +139,8 @@ class EntryFrame(Toplevel, ABC):
 
 
 class SaveFrame(EntryFrame):
+    """Frame used to save the current count of each pollen in a CSV file."""
+
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
         self.function_button = ttk.Button(self, text="Save", command=self._save)
@@ -168,6 +169,8 @@ class SaveFrame(EntryFrame):
 
 
 class LoadFrame(EntryFrame):
+    """Frame used to load the count of each pollen from a CSV file."""
+
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
         self.function_button = ttk.Button(self, text="Load", command=self._load)
@@ -208,3 +211,23 @@ class LoadFrame(EntryFrame):
                 self.destroy()
         else:
             custom_logger.error("Error, wrong filename.")
+
+
+class HelpFrame(Toplevel):
+    """Frame shown when clicking the ? button."""
+
+    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
+        super().__init__(master)
+        self.master = master
+        # Help text
+        self.help_text = StringVar()
+        self.help_text.set(
+            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY}\n- Redo: {_REDO_KEY}"
+        )
+        self.text_widget = ttk.Label(self, justify='left', relief="raised", foreground="black", background="white", padding=10)
+        self.text_widget.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+        self.text_widget["textvariable"] = self.help_text
+        # Cancel Button
+        self.cancel_button = ttk.Button(self, text="Cancel", command=self.destroy)
+        self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.resizable(1, 0)

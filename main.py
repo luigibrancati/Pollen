@@ -18,7 +18,7 @@ if __name__ == '__main__':
     file_handler = logging.FileHandler(filename=f"{log_dir}/log_{datetime.now().strftime('%Y%m%dT%H%M%S')}.log")
     custom_logger.addHandler(file_handler)
     custom_logger.setLevel(logging.DEBUG)
-    custom_logger.debug("Starting app")
+    custom_logger.info("Starting app")
 
     app = Application.generate_starting_frame()  # Generate app
     app.mainloop()  # Main event loop
