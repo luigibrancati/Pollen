@@ -2,5 +2,5 @@ _WIDTH = 1280
 _HEIGHT = 330
 _TLW_HEIGHT = 40
 _TLW_WIDTH = 340
-_UNDO_KEY = 'u'
-_REDO_KEY = 'r'
+_UNDO_KEY = '1'
+_REDO_KEY = '2'

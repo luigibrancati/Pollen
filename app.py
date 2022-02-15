@@ -1,15 +1,13 @@
-from os import EX_CANTCREAT
 import pandas as pd
 import logging
 from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLENS
-from config import _HEIGHT, _WIDTH
+from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY
 from collections import deque
-from pollen_class import Pollen
 
-
+custom_logger = logging.getLogger(name='pollen_logger')
 A = TypeVar("A", bound="Application")
 
 
@@ -44,8 +42,8 @@ class Application(Tk):
         self.button_quit = ttk.Button(self, text="Quit",
                                       command=self.destroy)
         # Undo and Redo bindings
-        self.bind("1", self.undo)
-        self.bind("2", self.redo)
+        self.bind(f"{_UNDO_KEY}", self.undo)
+        self.bind(f"{_REDO_KEY}", self.redo)
         self.bind("<<Changed>>", lambda event: self._add_to_undo(event.widget))
 
     def _add_to_undo(self, widget_ref):
@@ -75,7 +73,7 @@ class Application(Tk):
         self.button_quit.grid(column=self.cols-1, row=n_plns+1, padx=5, pady=5, sticky="e")
 
     def _reset_count(self):
-        logging.info("Reset pollen count and stacks.")
+        custom_logger.info("Reset pollen count and stacks.")
         self.undo_stack = deque()
         self.redo_stack = deque()
         for p in self.pollen_frames:
@@ -98,7 +96,7 @@ class Application(Tk):
             self._add_to_redo(widget)
             widget.undo()
         except IndexError as e:
-            logging.info(f"{e}")
+            custom_logger.info(f"{e}")
 
     def redo(self, event) -> None:
         try:
@@ -106,11 +104,16 @@ class Application(Tk):
             self._add_to_undo(widget)
             widget.redo()
         except IndexError as e:
-            logging.info(f"{e}")
+            custom_logger.info(f"{e}")
+
+    def clear(self):
+        self.pollen_frames = []
+        self.undo_stack = deque()
+        self.redo_stack = deque()
 
     def add_pollens(self, pollens: List[Dict[str, str]]) -> None:
         """Function to generate all bindings needed for the whole app."""
-        logging.info("Add pollens.")
+        custom_logger.info("Add pollens.")
         for pollen in pollens:
             try:
                 pln = PollenFrame.generate_with_binding(self,
@@ -123,22 +126,22 @@ class Application(Tk):
                                                         pollen['famiglia'],
                                                         pollen['nome'],
                                                         pollen['key'])
-            logging.info(f"Added pollen {pln.pollen.nome}")
+            custom_logger.info(f"Added pollen {pln.pollen.nome}")
             self.pollen_frames.append(pln)
         # We redraw the grid
         # This is need when we need to add new pollens later
-        logging.info("Finished adding pollens.")
+        custom_logger.info("Finished adding pollens.")
         self._draw_grid()
 
     def add_standard_pollens(self):
-        logging.info("Adding all standard pollens.")
+        custom_logger.info("Adding all standard pollens.")
         self.add_pollens(STANDARD_POLLENS)
-        logging.info("Finished adding standard pollens.")
+        custom_logger.info("Finished adding standard pollens.")
         self._draw_grid()
 
     @classmethod
     def generate_starting_frame(cls, cols: int = 5) -> A:
         app = Application(cols)
         app.add_standard_pollens()
-        logging.info("Application generated.")
+        custom_logger.info("Application generated.")
         return app

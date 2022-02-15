@@ -9,6 +9,7 @@ import logging
 from abc import ABC, abstractmethod
 
 
+custom_logger = logging.getLogger(name='pollen_logger')
 PF = TypeVar("PF", bound="PollenFrame")
 
 
@@ -48,7 +49,7 @@ class PollenFrame(ttk.Frame):
         # Set the label above to the variable value
         self.label["textvariable"] = self.contents
         self.label_binding["textvariable"] = self.key_bind
-        logging.debug(f"Created frame for pollen {self.pollen.nome}")
+        custom_logger.debug(f"Created frame for pollen {self.pollen.nome}")
 
     def _update_contents(self) -> None:
         self.contents.set(self.pollen.short_str())
@@ -83,7 +84,7 @@ class PollenFrame(ttk.Frame):
         self.master.bind(f"<{key}>", self.add)
         # Set the variable
         self.key_bind.set(f"{key}")
-        logging.info(f"Changed binding of {self.pollen.nome} to {key}")
+        custom_logger.info(f"Changed binding of {self.pollen.nome} to {key}")
 
     @classmethod
     def generate_with_binding(cls: PF,
@@ -99,7 +100,7 @@ class PollenFrame(ttk.Frame):
         pln = cls(master, fam, nome, count)
         # Bind the key to increase the pollen count
         pln.set_binding(key)
-        logging.info(f"Generated pollen {nome} bound to key {key}")
+        custom_logger.info(f"Generated pollen {nome} bound to key {key}")
         return pln
 
 
@@ -154,16 +155,16 @@ class SaveFrame(EntryFrame):
         self.entry.insert(0, dirname)
 
     def _save(self) -> None:
-        logging.info("Save data to csv file.")
+        custom_logger.info("Save data to csv file.")
         if not os.path.exists("./data"):
             os.makedirs("./data")
         filename = self.entry.get()
         if filename is not None and '.csv' in filename:
             self.data.to_csv(filename, sep=';', index=False)
-            logging.info(f"Finished saving to csv file {os.path.abspath(filename)}.")
+            custom_logger.info(f"Finished saving to csv file {os.path.abspath(filename)}.")
             self.destroy()
         else:
-            logging.error("Error, wrong filename.")
+            custom_logger.error("Error, wrong filename.")
 
 
 class LoadFrame(EntryFrame):
@@ -183,7 +184,7 @@ class LoadFrame(EntryFrame):
         self.entry.insert(0, os.path.abspath(filename))
 
     def _load(self) -> None:
-        logging.info("Load data from csv file.")
+        custom_logger.info("Load data from csv file.")
         bindings = ["Up", "Down", "Left", "Right", "a", "b",
                     "c", "d", "e", "f", "g", "h", "i", "j",
                     "k", "l", "m", "n", "o", "p", "q", "r",
@@ -193,16 +194,17 @@ class LoadFrame(EntryFrame):
             try:
                 df = pd.read_csv(filename, sep=';', index_col=False)
                 vals = list(df.T.to_dict().values())
-                logging.debug(f"Loaded pandas dataframe with data {vals}")
-                self.master.clear()  # Clear previous stuff
+                custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
+                # Clear previous stuff
+                self.master.clear()
                 self.master.add_pollens(
                     [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
                 )
-                logging.info(f"Finished loading from csv file {os.path.abspath(filename)}.")
+                custom_logger.info(f"Finished loading from csv file {os.path.abspath(filename)}.")
             except FileNotFoundError as e:
-                logging.error("File not found.")
+                custom_logger.error("File not found.")
                 raise e
             finally:
                 self.destroy()
         else:
-            logging.error("Error, wrong filename.")
+            custom_logger.error("Error, wrong filename.")

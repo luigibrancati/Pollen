@@ -1,6 +1,7 @@
 import logging
 
 
+custom_logger = logging.getLogger(name='pollen_logger')
 STANDARD_POLLENS = [
     {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up"},
     {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down"},
@@ -37,19 +38,19 @@ class Pollen:
         self.famiglia = famiglia  # Family
         self.nome = nome  # Name
         self.conteggio = conteggio  # Total count
-        logging.debug(f"Created pollen {self}")
+        custom_logger.debug(f"Created pollen {self}")
 
     def add(self):
         self.conteggio += 1
-        logging.debug(f"Updated pollen {self}")
+        custom_logger.debug(f"Updated pollen {self}")
 
     def reset(self):
         self.conteggio = 0
-        logging.debug(f"Reset pollen {self}")
+        custom_logger.debug(f"Reset pollen {self}")
 
     def set_count(self, count: int):
         self.conteggio = count
-        logging.debug(f"Set pollen {self} count to {self.conteggio}")
+        custom_logger.debug(f"Set pollen {self} count to {self.conteggio}")
 
     def __str__(self):
         return f"""{{
