@@ -1,4 +1,4 @@
-from config import TLW_HEIGHT, TLW_WIDTH
+from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
 from typing import TypeVar, Union
@@ -56,6 +56,10 @@ class PollenFrame(ttk.Frame):
         self.pollen.reset()
         self.update_contents()
 
+    def set_pollen(self, pollen: Pollen):
+        self.pollen = pollen
+        self.update_contents()
+
     def set_binding(self, key: str) -> None:
         # Bind the key to increase the pollen count
         self.master.bind(f"<{key}>", self.add)
@@ -98,7 +102,7 @@ class EntryFrame(Toplevel, ABC):
         self._update_position()
 
     def _grid_config(self):
-        self.geometry(f"{TLW_WIDTH}x{TLW_HEIGHT}")
+        self.geometry(f"{_TLW_WIDTH}x{_TLW_HEIGHT}")
         self.columnconfigure(0, weight=3)
         self.columnconfigure(1, weight=0)
         self.columnconfigure(2, weight=0)
