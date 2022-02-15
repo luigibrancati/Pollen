@@ -33,11 +33,9 @@ class PollenFrame(ttk.Frame):
         self.undo_stack = deque()
         self.redo_stack = deque()
         # Tkinter labels to show relevant info
-        self.label_binding = ttk.Label(
-            self, borderwidth=3, relief="raised", padding=5
-        )
+        self.label_binding = ttk.Label(self, style="BindKey.TLabel")
         self.label_binding.grid(column=0, row=0, padx=5)
-        self.label = ttk.Label(self, padding=5)
+        self.label = ttk.Label(self, style="Generic.TLabel")
         self.label.grid(column=1, row=0, padx=5)
         # Create a string variable using tkinter class StringVar
         self.contents = StringVar()
@@ -86,12 +84,9 @@ class PollenFrame(ttk.Frame):
         custom_logger.info(f"Changed binding of {self.pollen.nome} to {key}")
 
     @classmethod
-    def generate_with_binding(cls: PF,
-                              master: ttk.Frame,
-                              fam: str,
-                              nome: str,
-                              key: str,
-                              count: int = 0) -> PF:
+    def generate_with_binding(
+        cls: PF, master: ttk.Frame, fam: str, nome: str, key: str, count: int = 0
+    ) -> PF:
         """Class method used to generate a new pollen instance
         while at the same time binding it to a keyboard key.
         """
@@ -115,7 +110,7 @@ class EntryFrame(Toplevel, ABC):
         self.entry = ttk.Entry(self, takefocus=True)
         self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="EW")
         # Browse button
-        self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file)
+        self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file, style="Generic.TButton")
         self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="E")
         self._update_position()
 
@@ -143,7 +138,7 @@ class SaveFrame(EntryFrame):
 
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
-        self.function_button = ttk.Button(self, text="Save", command=self._save)
+        self.function_button = ttk.Button(self, text="Save", command=self._save, style="Generic.TButton")
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
 
     def _select_file(self):
@@ -173,7 +168,7 @@ class LoadFrame(EntryFrame):
 
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
-        self.function_button = ttk.Button(self, text="Load", command=self._load)
+        self.function_button = ttk.Button(self, text="Load", command=self._load, style="Generic.TButton")
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
 
     def _select_file(self):
@@ -224,10 +219,10 @@ class HelpFrame(Toplevel):
         self.help_text.set(
             f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY}\n- Redo: {_REDO_KEY}"
         )
-        self.text_widget = ttk.Label(self, justify='left', relief="raised", foreground="black", background="white", padding=10)
+        self.text_widget = ttk.Label(self, style="Help.TLabel")
         self.text_widget.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.text_widget["textvariable"] = self.help_text
         # Cancel Button
-        self.cancel_button = ttk.Button(self, text="Cancel", command=self.destroy)
+        self.cancel_button = ttk.Button(self, text="Cancel", command=self.destroy, style="Generic.TButton")
         self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.resizable(1, 0)

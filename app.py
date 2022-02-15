@@ -30,23 +30,24 @@ class Application(Tk):
         self.undo_stack = deque()
         self.redo_stack = deque()
         # Reset count button
-        self.button_reset_count = ttk.Button(self, text="Reset count",
-                                             command=self._reset_count)
+        self.button_reset_count = ttk.Button(
+            self, text="Reset count", command=self._reset_count, style="Generic.TButton"
+        )
         # Load button
         self.button_load = ttk.Button(
-            self, text="Load", command=self._load
+            self, text="Load", command=self._load, style="Generic.TButton"
         )
         # Save button
         self.button_save = ttk.Button(
-            self, text="Save", command=self._save
+            self, text="Save", command=self._save, style="Generic.TButton"
         )
         # Quit button
         self.button_quit = ttk.Button(
-            self, text="Quit", command=self.destroy
+            self, text="Quit", command=self.destroy, style="Generic.TButton"
         )
         # Help button
         self.button_help = ttk.Button(
-            self, text="?", command=self._help
+            self, text="?", command=self._help, style="Generic.TButton"
         )
         # Undo and Redo bindings
         self.bind(f"{_UNDO_KEY}", self.undo)
