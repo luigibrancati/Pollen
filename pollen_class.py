@@ -1,7 +1,7 @@
 import logging
 
 
-STANDARD_POLLEN = [
+STANDARD_POLLENS = [
     {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up"},
     {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down"},
     {"famiglia": "Betulaceae", "nome": "Betulaceae", "key": "Left"},
