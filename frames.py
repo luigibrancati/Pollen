@@ -49,6 +49,7 @@ class PollenFrame(ttk.Frame):
 
     def add(self, event) -> None:
         """Callback function to increment pollen count."""
+        self.master._add_to_undo(dict(self.pollen.__dict__))
         self.pollen.add()
         self.update_contents()
 

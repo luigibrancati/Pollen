@@ -32,11 +32,11 @@ STANDARD_POLLENS = [
 
 
 class Pollen:
-    def __init__(self, fam: str, nome: str, count: int = 0) -> None:
+    def __init__(self, famiglia: str, nome: str, conteggio: int = 0) -> None:
         # Initialize the ttk.Frame class with a master frame
-        self.famiglia = fam  # Family
+        self.famiglia = famiglia  # Family
         self.nome = nome  # Name
-        self.conteggio = count  # Total count
+        self.conteggio = conteggio  # Total count
         logging.debug(f"Created pollen {self}")
 
     def add(self):
