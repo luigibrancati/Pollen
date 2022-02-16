@@ -100,7 +100,10 @@ class Application(Tk):
             p.reset()
 
     def _help(self) -> None:
-        help_frame = HelpFrame(self)
+        help_frame = HelpFrame(
+            self,
+            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY}\n- Redo: {_REDO_KEY}"
+        )
         help_frame.title("Help")
         help_frame.mainloop()
 

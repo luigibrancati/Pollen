@@ -107,12 +107,12 @@ class EntryFrame(Toplevel, ABC):
         self.init_dir = "."
         self._grid_config()
         self.entry = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="EW")
+        self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         # Browse button
         self.button_cancel = ttk.Button(
             self, text="Browse", command=self._select_file, style="Generic.TButton"
         )
-        self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="E")
+        self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
 
     def _grid_config(self):
@@ -142,7 +142,7 @@ class SaveFrame(EntryFrame):
         self.function_button = ttk.Button(
             self, text="Save", command=self._save, style="Generic.TButton"
         )
-        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
+        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
@@ -157,6 +157,7 @@ class SaveFrame(EntryFrame):
         if not os.path.exists("./data"):
             os.makedirs("./data")
         filename = self.entry.get()
+        filename = filename.strip().split(".")[0] + ".csv"
         if filename is not None and ".csv" in filename:
             self.data.to_csv(filename, sep=";", index=False)
             custom_logger.info(
@@ -175,7 +176,7 @@ class LoadFrame(EntryFrame):
         self.function_button = ttk.Button(
             self, text="Load", command=self._load, style="Generic.TButton"
         )
-        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
+        self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
     def _select_file(self):
         filename = filedialog.askopenfilename(
@@ -247,14 +248,12 @@ class LoadFrame(EntryFrame):
 class HelpFrame(Toplevel):
     """Frame shown when clicking the ? button."""
 
-    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
+    def __init__(self, master: Union[ttk.Frame, Tk], help_str: str) -> None:
         super().__init__(master)
         self.master = master
         # Help text
         self.help_text = StringVar()
-        self.help_text.set(
-            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY}\n- Redo: {_REDO_KEY}"
-        )
+        self.help_text.set(help_str)
         self.text_widget = ttk.Label(self, style="Help.TLabel")
         self.text_widget.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.text_widget["textvariable"] = self.help_text
@@ -264,3 +263,6 @@ class HelpFrame(Toplevel):
         )
         self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.resizable(1, 0)
+
+    def set_help_text(self, text: str) -> None:
+        self.help_text.set(text)

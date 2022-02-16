@@ -36,10 +36,10 @@ if __name__ == "__main__":
         foreground="black",
         background="white",
         padding=5,
-        font=(_FONT, 11),
+        font=(_FONT, 10)
     )
     style.configure(
-        "BindKey.TLabel", padding=5, borderwidth=3, relief="raised", font=(_FONT, 10)
+        "BindKey.TLabel", padding=5, borderwidth=3, relief="groove", font=(_FONT, 10)
     )
     style.configure("Help.TButton", padding=5, font=(_FONT, 10), width=2)
     style.configure(
