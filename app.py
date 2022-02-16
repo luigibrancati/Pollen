@@ -7,7 +7,7 @@ from pollen_class import STANDARD_POLLENS
 from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY
 from collections import deque
 
-custom_logger = logging.getLogger(name='pollen_logger')
+custom_logger = logging.getLogger(name="pollen_logger")
 A = TypeVar("A", bound="Application")
 
 
@@ -33,11 +33,33 @@ class Application(Tk):
         self.button_frame = ttk.Frame(self)
         # Buttons: Reset count, Load, Save, Quit, Help
         self.buttons = [
-            ttk.Button(self.button_frame, text="Reset count", command=self._reset_count, style="Generic.TButton"),
-            ttk.Button(self.button_frame, text="Load", command=self._load, style="Generic.TButton"),
-            ttk.Button(self.button_frame, text="Save", command=self._save, style="Generic.TButton"),
-            ttk.Button(self.button_frame, text="Quit", command=self.destroy, style="Generic.TButton"),
-            ttk.Button(self.button_frame, text="?", command=self._help, style="Help.TButton")
+            ttk.Button(
+                self.button_frame,
+                text="Reset count",
+                command=self._reset_count,
+                style="Generic.TButton",
+            ),
+            ttk.Button(
+                self.button_frame,
+                text="Load",
+                command=self._load,
+                style="Generic.TButton",
+            ),
+            ttk.Button(
+                self.button_frame,
+                text="Save",
+                command=self._save,
+                style="Generic.TButton",
+            ),
+            ttk.Button(
+                self.button_frame,
+                text="Quit",
+                command=self.destroy,
+                style="Generic.TButton",
+            ),
+            ttk.Button(
+                self.button_frame, text="?", command=self._help, style="Help.TButton"
+            ),
         ]
         # Undo and Redo bindings
         self.bind(f"{_UNDO_KEY}", self.undo)
@@ -64,7 +86,9 @@ class Application(Tk):
             col = i % self.cols
             row = i // self.cols + 1
             pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
-        self.button_frame.grid(column=0, row=row+1, columnspan=self.cols, padx=10, pady=10, sticky="e")
+        self.button_frame.grid(
+            column=0, row=row + 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
+        )
         for i, button in enumerate(self.buttons):
             button.grid(column=i, row=0, padx=5, sticky="e")
 
@@ -117,16 +141,17 @@ class Application(Tk):
         custom_logger.info("Add pollens.")
         for pollen in pollens:
             try:
-                pln = PollenFrame.generate_with_binding(self,
-                                                        pollen['famiglia'],
-                                                        pollen['nome'],
-                                                        pollen['key'],
-                                                        pollen['conteggio'])
+                pln = PollenFrame.generate_with_binding(
+                    self,
+                    pollen["famiglia"],
+                    pollen["nome"],
+                    pollen["key"],
+                    pollen["conteggio"],
+                )
             except KeyError:
-                pln = PollenFrame.generate_with_binding(self,
-                                                        pollen['famiglia'],
-                                                        pollen['nome'],
-                                                        pollen['key'])
+                pln = PollenFrame.generate_with_binding(
+                    self, pollen["famiglia"], pollen["nome"], pollen["key"]
+                )
             custom_logger.info(f"Added pollen {pln.pollen.nome}")
             self.pollen_frames.append(pln)
         # We redraw the grid

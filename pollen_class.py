@@ -1,14 +1,18 @@
 import logging
 
 
-custom_logger = logging.getLogger(name='pollen_logger')
+custom_logger = logging.getLogger(name="pollen_logger")
 STANDARD_POLLENS = [
     {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up"},
     {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down"},
     {"famiglia": "Betulaceae", "nome": "Betulaceae", "key": "Left"},
     {"famiglia": "Alnus", "nome": "Alnus", "key": "Right"},
     {"famiglia": "Betula", "nome": "Betula", "key": "a"},
-    {"famiglia": "Chenopodiaceae/Amaranthaceae", "nome": "Chenopodiaceae/Amaranthaceae", "key": "b"},
+    {
+        "famiglia": "Chenopodiaceae/Amaranthaceae",
+        "nome": "Chenopodiaceae/Amaranthaceae",
+        "key": "b",
+    },
     {"famiglia": "Compositae", "nome": "Ambrosia", "key": "c"},
     {"famiglia": "Compositae", "nome": "Artemisia", "key": "d"},
     {"famiglia": "Corylaceae", "nome": "Carpinus", "key": "e"},
@@ -28,7 +32,7 @@ STANDARD_POLLENS = [
     {"famiglia": "Salicaceae", "nome": "Salix", "key": "s"},
     {"famiglia": "Ulmaceae", "nome": "Ulmaceae", "key": "t"},
     {"famiglia": "Uritcaceae", "nome": "Uritcaceae", "key": "u"},
-    {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v"}
+    {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v"},
 ]
 
 

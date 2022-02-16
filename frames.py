@@ -9,7 +9,7 @@ import logging
 from abc import ABC, abstractmethod
 
 
-custom_logger = logging.getLogger(name='pollen_logger')
+custom_logger = logging.getLogger(name="pollen_logger")
 PF = TypeVar("PF", bound="PollenFrame")
 
 
@@ -21,8 +21,7 @@ class PollenFrame(ttk.Frame):
     and its key binding.
     """
 
-    def __init__(self, master: ttk.Frame, fam: str, nome: str,
-                 count: int = 0) -> None:
+    def __init__(self, master: ttk.Frame, fam: str, nome: str, count: int = 0) -> None:
         # Initialize the ttk.Frame class with a master frame
         super().__init__(master)
         self.master = master
@@ -110,7 +109,9 @@ class EntryFrame(Toplevel, ABC):
         self.entry = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
         self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="EW")
         # Browse button
-        self.button_cancel = ttk.Button(self, text="Browse", command=self._select_file, style="Generic.TButton")
+        self.button_cancel = ttk.Button(
+            self, text="Browse", command=self._select_file, style="Generic.TButton"
+        )
         self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="E")
         self._update_position()
 
@@ -126,7 +127,7 @@ class EntryFrame(Toplevel, ABC):
         y = self.master.winfo_y()
         w = self.master.winfo_width()
         h = self.master.winfo_height()
-        self.geometry("+%d+%d" % (x + w//3, y + h//3))
+        self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
 
     @abstractmethod
     def _select_file(self):
@@ -138,13 +139,14 @@ class SaveFrame(EntryFrame):
 
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
-        self.function_button = ttk.Button(self, text="Save", command=self._save, style="Generic.TButton")
+        self.function_button = ttk.Button(
+            self, text="Save", command=self._save, style="Generic.TButton"
+        )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
-            initialdir=self.init_dir,
-            title="Select a Directory"
+            initialdir=self.init_dir, title="Select a Directory"
         )
         self.init_dir = dirname
         self.entry.delete(0, "end")
@@ -155,9 +157,11 @@ class SaveFrame(EntryFrame):
         if not os.path.exists("./data"):
             os.makedirs("./data")
         filename = self.entry.get()
-        if filename is not None and '.csv' in filename:
-            self.data.to_csv(filename, sep=';', index=False)
-            custom_logger.info(f"Finished saving to csv file {os.path.abspath(filename)}.")
+        if filename is not None and ".csv" in filename:
+            self.data.to_csv(filename, sep=";", index=False)
+            custom_logger.info(
+                f"Finished saving to csv file {os.path.abspath(filename)}."
+            )
             self.destroy()
         else:
             custom_logger.error("Error, wrong filename.")
@@ -168,14 +172,16 @@ class LoadFrame(EntryFrame):
 
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
-        self.function_button = ttk.Button(self, text="Load", command=self._load, style="Generic.TButton")
+        self.function_button = ttk.Button(
+            self, text="Load", command=self._load, style="Generic.TButton"
+        )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="E")
 
     def _select_file(self):
         filename = filedialog.askopenfilename(
             initialdir=self.init_dir,
             title="Select a File",
-            filetypes=(("CSV files", "*.csv"), ("all files", "*.*"))
+            filetypes=(("CSV files", "*.csv"), ("all files", "*.*")),
         )
         self.init_dir = os.path.dirname(os.path.abspath(filename))
         self.entry.delete(0, "end")
@@ -183,22 +189,52 @@ class LoadFrame(EntryFrame):
 
     def _load(self) -> None:
         custom_logger.info("Load data from csv file.")
-        bindings = ["Up", "Down", "Left", "Right", "a", "b",
-                    "c", "d", "e", "f", "g", "h", "i", "j",
-                    "k", "l", "m", "n", "o", "p", "q", "r",
-                    "s", "t", "u", "v", "x", "y", "w", "z"]
+        bindings = [
+            "Up",
+            "Down",
+            "Left",
+            "Right",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "x",
+            "y",
+            "w",
+            "z",
+        ]
         filename = self.entry.get()
-        if filename is not None and '.csv' in filename:
+        if filename is not None and ".csv" in filename:
             try:
-                df = pd.read_csv(filename, sep=';', index_col=False)
+                df = pd.read_csv(filename, sep=";", index_col=False)
                 vals = list(df.T.to_dict().values())
                 custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
                 # Clear previous stuff
                 self.master.clear()
                 self.master.add_pollens(
-                    [{**vals[i], 'key': bindings[i]} for i in range(len(vals))]
+                    [{**vals[i], "key": bindings[i]} for i in range(len(vals))]
                 )
-                custom_logger.info(f"Finished loading from csv file {os.path.abspath(filename)}.")
+                custom_logger.info(
+                    f"Finished loading from csv file {os.path.abspath(filename)}."
+                )
             except FileNotFoundError as e:
                 custom_logger.error("File not found.")
                 raise e
@@ -223,6 +259,8 @@ class HelpFrame(Toplevel):
         self.text_widget.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.text_widget["textvariable"] = self.help_text
         # Cancel Button
-        self.cancel_button = ttk.Button(self, text="Cancel", command=self.destroy, style="Generic.TButton")
+        self.cancel_button = ttk.Button(
+            self, text="Cancel", command=self.destroy, style="Generic.TButton"
+        )
         self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.resizable(1, 0)
