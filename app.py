@@ -4,7 +4,7 @@ from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame
 from tkinter import ttk, Tk
 from pollen_class import STANDARD_POLLENS
-from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY
+from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP
 from collections import deque
 
 custom_logger = logging.getLogger(name="pollen_logger")
@@ -62,8 +62,8 @@ class Application(Tk):
             ),
         ]
         # Undo and Redo bindings
-        self.bind(f"{_UNDO_KEY}", self.undo)
-        self.bind(f"{_REDO_KEY}", self.redo)
+        self.bind(f"<{_UNDO_KEY}>", self.undo)
+        self.bind(f"<{_REDO_KEY}>", self.redo)
         self.bind("<<Changed>>", lambda event: self._add_to_undo(event.widget))
 
     def _add_to_undo(self, widget_ref):
@@ -102,7 +102,7 @@ class Application(Tk):
     def _help(self) -> None:
         help_frame = HelpFrame(
             self,
-            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY}\n- Redo: {_REDO_KEY}"
+            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY_HELP}\n- Redo: {_REDO_KEY_HELP}"
         )
         help_frame.title("Help")
         help_frame.mainloop()

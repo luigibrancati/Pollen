@@ -1,5 +1,5 @@
 from collections import deque
-from config import _TLW_HEIGHT, _TLW_WIDTH, _UNDO_KEY, _REDO_KEY
+from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
 from typing import TypeVar, Union
