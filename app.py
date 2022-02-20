@@ -64,13 +64,7 @@ class Application(Tk):
         # Undo and Redo bindings
         self.bind(f"<{_UNDO_KEY}>", self.undo)
         self.bind(f"<{_REDO_KEY}>", self.redo)
-        self.bind("<<Changed>>", lambda event: self._add_to_undo(event.widget))
-
-    def _add_to_undo(self, widget_ref):
-        self.undo_stack.append(widget_ref)
-
-    def _add_to_redo(self, widget_ref):
-        self.redo_stack.append(widget_ref)
+        self.bind("<<Changed>>", lambda event: self.undo_stack.append(event.widget))
 
     def _grid_config(self):
         self.geometry(f"{_WIDTH}x{_HEIGHT}")
@@ -121,7 +115,7 @@ class Application(Tk):
     def undo(self, event) -> None:
         try:
             widget = self.undo_stack.pop()
-            self._add_to_redo(widget)
+            self.redo_stack.append(widget)
             widget.undo()
         except IndexError as e:
             custom_logger.info(f"{e}")
@@ -129,7 +123,7 @@ class Application(Tk):
     def redo(self, event) -> None:
         try:
             widget = self.redo_stack.pop()
-            self._add_to_undo(widget)
+            self.undo_stack.append(widget)
             widget.redo()
         except IndexError as e:
             custom_logger.info(f"{e}")
