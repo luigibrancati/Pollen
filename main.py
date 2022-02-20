@@ -4,17 +4,24 @@ from tkinter import ttk
 from config import _FONT
 import logging
 import os
+import platform
 
 
 if __name__ == "__main__":
-    app_data = os.getenv("LOCALAPPDATA")
-    if app_data is not None:
-        log_dir = f"{app_data}/Pollen/logs"
+    # Create logs directory based on OS
+    if "windows" in platform.system().lower():
+        app_data_dir = os.getenv("LOCALAPPDATA") or "."
+        pollen_dir = os.path.join(app_data_dir, "Pollen")
     else:
-        log_dir = "./Pollen/logs"
-
-    if not os.path.exists(log_dir):
+        app_data_dir = os.getenv("HOME") or "."
+        pollen_dir = os.path.join(app_data_dir, ".pollen")
+    log_dir = os.path.join(pollen_dir, "logs")
+    if not os.path.exists(pollen_dir):
+        os.makedirs(pollen_dir)
         os.makedirs(log_dir)
+    else:
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
     custom_logger = logging.getLogger(name="pollen_logger")
     file_handler = logging.FileHandler(
