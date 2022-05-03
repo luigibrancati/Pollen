@@ -1,0 +1,35 @@
+{
+    "pollens": [
+        {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up", "use_family": true},
+        {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down", "use_family": true},
+        {"famiglia": "Betulaceae", "nome": "Betulaceae", "key": "Left", "use_family": true},
+        {"famiglia": "Alnus", "nome": "Alnus", "key": "Right", "use_family": true},
+        {"famiglia": "Betula", "nome": "Betula", "key": "a", "use_family": true},
+        {
+            "famiglia": "Chenopodiaceae/Amaranthaceae",
+            "nome": "Chenopodiaceae/Amaranthaceae",
+            "key": "b",
+            "use_family": true
+        },
+        {"famiglia": "Compositae", "nome": "Ambrosia", "key": "c", "use_family": false},
+        {"famiglia": "Compositae", "nome": "Artemisia", "key": "d", "use_family": false},
+        {"famiglia": "Corylaceae", "nome": "Carpinus", "key": "e", "use_family": false},
+        {"famiglia": "Corylaceae", "nome": "Coryllus avellana", "key": "f", "use_family": false},
+        {"famiglia": "Cupressaceae/Taxaceae", "nome": "Cupressaceae/Taxaceae", "key": "g", "use_family": true},
+        {"famiglia": "Fagaceae", "nome": "Castanea sativa", "key": "h", "use_family": false},
+        {"famiglia": "Fagaceae", "nome": "Fagus sylvatica", "key": "i", "use_family": false},
+        {"famiglia": "Fagaceae", "nome": "Quercus", "key": "j", "use_family": false},
+        {"famiglia": "Graminae", "nome": "Graminae", "key": "k", "use_family": true},
+        {"famiglia": "Oleaceae", "nome": "Fraxinus", "key": "l", "use_family": false},
+        {"famiglia": "Oleaceae", "nome": "Olea", "key": "m", "use_family": false},
+        {"famiglia": "Pinaceae", "nome": "Pinaceae", "key": "n", "use_family": true},
+        {"famiglia": "Plantaginaceae", "nome": "Plantaginaceae", "key": "o", "use_family": true},
+        {"famiglia": "Platanaceae", "nome": "Platanaceae", "key": "p", "use_family": true},
+        {"famiglia": "Polygonaceae", "nome": "Polygonaceae", "key": "q", "use_family": true},
+        {"famiglia": "Salicaceae", "nome": "Populus", "key": "r", "use_family": false},
+        {"famiglia": "Salicaceae", "nome": "Salix", "key": "s", "use_family": false},
+        {"famiglia": "Ulmaceae", "nome": "Ulmaceae", "key": "t", "use_family": true},
+        {"famiglia": "Uritcaceae", "nome": "Uritcaceae", "key": "u", "use_family": true},
+        {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v", "use_family": true}
+    ]
+}
