@@ -3,9 +3,9 @@ import logging
 from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame
 from tkinter import ttk, Tk
-from pollen_class import STANDARD_POLLENS
 from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP
 from collections import deque
+import json
 
 custom_logger = logging.getLogger(name="pollen_logger")
 A = TypeVar("A", bound="Application")
@@ -143,13 +143,14 @@ class Application(Tk):
                     pollen["famiglia"],
                     pollen["nome"],
                     pollen["key"],
+                    pollen["use_family"],
                     pollen["conteggio"],
                 )
             except KeyError:
                 pln = PollenFrame.generate_with_binding(
-                    self, pollen["famiglia"], pollen["nome"], pollen["key"]
+                    self, pollen["famiglia"], pollen["nome"], pollen["key"], pollen["use_family"]
                 )
-            custom_logger.info(f"Added pollen {pln.pollen.nome}")
+            custom_logger.info(f"Added pollen {pln.pollen.famiglia} - {pln.pollen.nome}")
             self.pollen_frames.append(pln)
         # We redraw the grid
         # This is need when we need to add new pollens later
@@ -157,9 +158,10 @@ class Application(Tk):
         self._draw_grid()
 
     def add_standard_pollens(self):
-        custom_logger.info("Adding all standard pollens.")
-        self.add_pollens(STANDARD_POLLENS)
-        custom_logger.info("Finished adding standard pollens.")
+        with open('./pollen_configuration.json', 'r') as f:
+            custom_logger.info("Adding all standard pollens.")
+            self.add_pollens(json.load(f)['pollens'])
+            custom_logger.info("Finished adding standard pollens.")
         self._draw_grid()
 
     @classmethod

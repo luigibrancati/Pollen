@@ -2,46 +2,15 @@ import logging
 
 
 custom_logger = logging.getLogger(name="pollen_logger")
-STANDARD_POLLENS = [
-    {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up"},
-    {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down"},
-    {"famiglia": "Betulaceae", "nome": "Betulaceae", "key": "Left"},
-    {"famiglia": "Alnus", "nome": "Alnus", "key": "Right"},
-    {"famiglia": "Betula", "nome": "Betula", "key": "a"},
-    {
-        "famiglia": "Chenopodiaceae/Amaranthaceae",
-        "nome": "Chenopodiaceae/Amaranthaceae",
-        "key": "b",
-    },
-    {"famiglia": "Compositae", "nome": "Ambrosia", "key": "c"},
-    {"famiglia": "Compositae", "nome": "Artemisia", "key": "d"},
-    {"famiglia": "Corylaceae", "nome": "Carpinus", "key": "e"},
-    {"famiglia": "Corylaceae", "nome": "Coryllus avellana", "key": "f"},
-    {"famiglia": "Cupressaceae/Taxaceae", "nome": "Cupressaceae/Taxaceae", "key": "g"},
-    {"famiglia": "Fagaceae", "nome": "Castanea sativa", "key": "h"},
-    {"famiglia": "Fagaceae", "nome": "Fagus sylvatica", "key": "i"},
-    {"famiglia": "Fagaceae", "nome": "Quercus", "key": "j"},
-    {"famiglia": "Graminae", "nome": "Graminae", "key": "k"},
-    {"famiglia": "Oleaceae", "nome": "Fraxinus", "key": "l"},
-    {"famiglia": "Oleaceae", "nome": "Olea", "key": "m"},
-    {"famiglia": "Pinaceae", "nome": "Pinaceae", "key": "n"},
-    {"famiglia": "Plantaginaceae", "nome": "Plantaginaceae", "key": "o"},
-    {"famiglia": "Platanaceae", "nome": "Platanaceae", "key": "p"},
-    {"famiglia": "Polygonaceae", "nome": "Polygonaceae", "key": "q"},
-    {"famiglia": "Salicaceae", "nome": "Populus", "key": "r"},
-    {"famiglia": "Salicaceae", "nome": "Salix", "key": "s"},
-    {"famiglia": "Ulmaceae", "nome": "Ulmaceae", "key": "t"},
-    {"famiglia": "Uritcaceae", "nome": "Uritcaceae", "key": "u"},
-    {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v"},
-]
 
 
 class Pollen:
-    def __init__(self, famiglia: str, nome: str, conteggio: int = 0) -> None:
+    def __init__(self, famiglia: str, nome: str, use_family: bool, conteggio: int = 0) -> None:
         # Initialize the ttk.Frame class with a master frame
         self.famiglia = famiglia  # Family
         self.nome = nome  # Name
         self.conteggio = conteggio  # Total count
+        self.use_family = use_family # Use family or name in the frontend 
         custom_logger.debug(f"Created pollen {self}")
 
     def add(self):
@@ -64,4 +33,4 @@ class Pollen:
         }}"""
 
     def short_str(self):
-        return f"{self.famiglia}: {self.conteggio}"
+        return f"{self.famiglia}: {self.conteggio}" if self.use_family else f"{self.nome}: {self.conteggio}"
