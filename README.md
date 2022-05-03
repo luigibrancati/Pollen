@@ -47,7 +47,7 @@ By default, the executable `Pollen.exe` will be built inside the `./dist` folder
 ### To do
 
 Further improvements:
-- Manage where to place logs and data; as of now, the app will just create `.logs` and `data` folders in its local folder;
+- Manage where to place logs and data; as of now, the app will just create `.logs` and `data` folders in its local folder; DONE
 - Add a button/functionality to redefine binding according to a user liking;
 - Add button/functionality to add a pollen to the standard one, i.e. the ones shown by the app when it starts;
-- Add Undo/Redo func (using a stack to save).
+- Add Undo/Redo func (using a stack to save). DONE
