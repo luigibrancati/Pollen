@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 from typing import TypeVar, Dict, List
-from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame
+from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame, ExtraInfoFrame
 from tkinter import ttk, Tk
 from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP
 from collections import deque
@@ -22,6 +22,7 @@ class Application(Tk):
         self.cols = cols
         # A list to keep all pollen frames
         self.pollen_frames = []
+        self.data_extra = pd.DataFrame([])
         # Stacks to implement the undo and redo functionality
         # These stacks don't actually keep the states of the pollen counts
         # but only references to the widget that changed
@@ -33,6 +34,12 @@ class Application(Tk):
         self.button_frame = ttk.Frame(self)
         # Buttons: Reset count, Load, Save, Quit, Help
         self.buttons = [
+            ttk.Button(
+                self.button_frame,
+                text="IDs",
+                command=self._extra_info,
+                style="Generic.TButton",
+            ),
             ttk.Button(
                 self.button_frame,
                 text="Reset count",
@@ -85,6 +92,11 @@ class Application(Tk):
         )
         for i, button in enumerate(self.buttons):
             button.grid(column=i, row=0, padx=5, sticky="e")
+
+    def _extra_info(self) -> None:
+        id_frame = ExtraInfoFrame(self)
+        id_frame.title("Exrta info")
+        id_frame.mainloop()
 
     def _reset_count(self):
         custom_logger.info("Reset pollen count and stacks.")
@@ -165,7 +177,7 @@ class Application(Tk):
         self._draw_grid()
 
     @classmethod
-    def generate_starting_frame(cls, cols: int = 5) -> A:
+    def start(cls, cols: int = 5) -> A:
         app = Application(cols)
         app.add_standard_pollens()
         custom_logger.info("Application generated.")

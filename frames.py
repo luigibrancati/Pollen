@@ -266,3 +266,53 @@ class HelpFrame(Toplevel):
 
     def set_help_text(self, text: str) -> None:
         self.help_text.set(text)
+
+
+class ExtraInfoFrame(Toplevel):
+    """This class manages the window used to add vetrino id and operator id."""
+
+    def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
+        super().__init__(master, takefocus=True)
+        self.master = master
+        self._grid_config()
+        # Vetrino
+        self.label_vetrino = ttk.Label(self, style="Generic.TLabel")
+        self.label_vetrino.grid(row=0, column=0, padx=5, pady=5, )
+        self.label_vetrino["text"] = 'Vetrino'
+        self.entry_vetrino = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        self.entry_vetrino.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        # Operatore
+        self.label_operator = ttk.Label(self, style="Generic.TLabel")
+        self.label_operator.grid(row=1, column=0, padx=5, pady=5)
+        self.label_operator["text"] = 'Operatore'
+        self.entry_operator = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        self.entry_operator.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
+        # Save button
+        self.button_save = ttk.Button(
+            self, text="Save", command=self._save, style="Generic.TButton"
+        )
+        self.button_save.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        # Cancel button
+        self.button_cancel = ttk.Button(
+            self, text="Cancel", command=self.destroy, style="Generic.TButton"
+        )
+        self.button_cancel.grid(row=2, column=1, padx=5, pady=5, sticky="e")
+        self._update_position()
+
+    def _grid_config(self):
+        self.rowconfigure(0, weight=0)
+        self.rowconfigure(1, weight=4)
+        self.rowconfigure(2, weight=0)
+        self.resizable(0, 1)
+
+    def _update_position(self):
+        x = self.master.winfo_x()
+        y = self.master.winfo_y()
+        w = self.master.winfo_width()
+        h = self.master.winfo_height()
+        self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
+
+    def _save(self):
+        operators = self.entry_operator.get().strip()
+        vetrini = self.entry_vetrino.get().strip()
+        self.master.data_extra = pd.DataFrame([operators, vetrini], columns=['Operatori', 'ID_Vetrino'])

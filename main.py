@@ -32,7 +32,7 @@ if __name__ == "__main__":
     custom_logger.info("Starting app")
 
     # Generate app
-    app = Application.generate_starting_frame()
+    app = Application.start()
 
     # Custom styles
     style = ttk.Style(app)
