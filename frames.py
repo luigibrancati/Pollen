@@ -1,7 +1,8 @@
 from collections import deque
+from tokenize import String
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
-from tkinter import Toplevel, ttk, StringVar, Tk, filedialog, Text
+from tkinter import END, Toplevel, ttk, StringVar, Tk, filedialog, Text
 from typing import TypeVar, Union
 import pandas as pd
 import os
@@ -280,12 +281,20 @@ class ExtraInfoFrame(Toplevel):
         self.label_vetrino.grid(row=0, column=0, padx=5, pady=5, )
         self.label_vetrino["text"] = 'Vetrino'
         self.entry_vetrino = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        text = self.master.data_extra.get('Vetrino', '')
+        if isinstance(text, pd.Series):
+            text = text.iloc[0]
+        self.entry_vetrino.insert(0, text)
         self.entry_vetrino.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Operatore
         self.label_operator = ttk.Label(self, style="Generic.TLabel")
         self.label_operator.grid(row=1, column=0, padx=5, pady=5, sticky="n")
         self.label_operator["text"] = 'Operatore'
         self.text_operator = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
+        text = self.master.data_extra.get('Operatori', '')
+        if isinstance(text, pd.Series):
+            text = text.iloc[0]
+        self.text_operator.insert("1.0", text)
         self.text_operator.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
@@ -316,6 +325,7 @@ class ExtraInfoFrame(Toplevel):
         self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
 
     def _save(self):
-        operators = self.text_operator.get().strip()
-        vetrini = self.entry_vetrino.get().strip()
-        self.master.data_extra = pd.DataFrame([operators, vetrini], columns=['Operatori', 'ID_Vetrino'])
+        operators = self.text_operator.get("1.0", END).strip()
+        vetrino = self.entry_vetrino.get().strip()
+        self.master.data_extra = pd.DataFrame({'Operatori': [operators], 'Vetrino': [vetrino]})
+        self.destroy()
