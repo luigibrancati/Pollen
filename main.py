@@ -58,6 +58,5 @@ if __name__ == "__main__":
         padding=10,
         font=(_FONT, 11),
     )
-
     # Main event loop
     app.mainloop()

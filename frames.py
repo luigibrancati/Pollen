@@ -1,7 +1,7 @@
 from collections import deque
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
-from tkinter import Toplevel, ttk, StringVar, Tk, filedialog
+from tkinter import Toplevel, ttk, StringVar, Tk, filedialog, Text
 from typing import TypeVar, Union
 import pandas as pd
 import os
@@ -280,29 +280,32 @@ class ExtraInfoFrame(Toplevel):
         self.label_vetrino.grid(row=0, column=0, padx=5, pady=5, )
         self.label_vetrino["text"] = 'Vetrino'
         self.entry_vetrino = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        self.entry_vetrino.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        self.entry_vetrino.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Operatore
         self.label_operator = ttk.Label(self, style="Generic.TLabel")
-        self.label_operator.grid(row=1, column=0, padx=5, pady=5)
+        self.label_operator.grid(row=1, column=0, padx=5, pady=5, sticky="n")
         self.label_operator["text"] = 'Operatore'
-        self.entry_operator = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        self.entry_operator.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
+        self.text_operator = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
+        self.text_operator.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
             self, text="Save", command=self._save, style="Generic.TButton"
         )
-        self.button_save.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.button_save.grid(row=2, column=1, padx=5, pady=5, sticky="e")
         # Cancel button
         self.button_cancel = ttk.Button(
             self, text="Cancel", command=self.destroy, style="Generic.TButton"
         )
-        self.button_cancel.grid(row=2, column=1, padx=5, pady=5, sticky="e")
+        self.button_cancel.grid(row=2, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
 
     def _grid_config(self):
         self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=4)
         self.rowconfigure(2, weight=0)
+        self.columnconfigure(0, weight=0)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=0)
         self.resizable(0, 1)
 
     def _update_position(self):
@@ -313,6 +316,6 @@ class ExtraInfoFrame(Toplevel):
         self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
 
     def _save(self):
-        operators = self.entry_operator.get().strip()
+        operators = self.text_operator.get().strip()
         vetrini = self.entry_vetrino.get().strip()
         self.master.data_extra = pd.DataFrame([operators, vetrini], columns=['Operatori', 'ID_Vetrino'])
