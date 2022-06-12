@@ -1,5 +1,6 @@
 from collections import deque
 from datetime import datetime
+from multiprocessing.sharedctypes import Value
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import END, Toplevel, ttk, StringVar, Tk, filedialog, Text
@@ -77,12 +78,23 @@ class PollenFrame(ttk.Frame):
         self.undo_stack.append(dict(self.pollen.__dict__))
         self.set_pollen(Pollen(**self.redo_stack.pop()))
 
-    def set_binding(self, key: str) -> None:
+    def set_binding(self, key: Union[str, int]) -> None:
         # Bind the key to increase the pollen count
-        self.master.bind(f"<{key}>", self.add)
+        key = str(key)
+        if PollenFrame.is_number_key(key):
+            self.master.bind(key, self.add)
+        else:
+            self.master.bind(f"<{key}>", self.add)
         # Set the variable
         self.key_bind.set(f"{key}")
         custom_logger.info(f"Changed binding of {self.pollen.nome} to {key}")
+
+    @staticmethod
+    def is_number_key(key: str):
+        try:
+            return int(key) in range(10)
+        except ValueError:
+            return False
 
     @classmethod
     def generate_with_binding(
