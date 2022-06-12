@@ -1,6 +1,5 @@
 from collections import deque
 from datetime import datetime
-from multiprocessing.sharedctypes import Value
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import END, Toplevel, ttk, StringVar, Tk, filedialog, Text
@@ -24,7 +23,9 @@ class PollenFrame(ttk.Frame):
     and its key binding.
     """
 
-    def __init__(self, master: ttk.Frame, fam: str, nome: str, use_family: bool, count: int = 0) -> None:
+    def __init__(
+        self, master: ttk.Frame, fam: str, nome: str, use_family: bool, count: int = 0
+    ) -> None:
         # Initialize the ttk.Frame class with a master frame
         super().__init__(master)
         self.master = master
@@ -98,7 +99,13 @@ class PollenFrame(ttk.Frame):
 
     @classmethod
     def generate_with_binding(
-        cls: PF, master: ttk.Frame, fam: str, nome: str, key: str, use_family: bool, count: int = 0
+        cls: PF,
+        master: ttk.Frame,
+        fam: str,
+        nome: str,
+        key: str,
+        use_family: bool,
+        count: int = 0,
     ) -> PF:
         """Class method used to generate a new pollen instance
         while at the same time binding it to a keyboard key.
@@ -157,17 +164,18 @@ class SaveFrame(EntryFrame):
             self, text="Salva", command=self._save, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
-        self.data = SaveFrame._data_fields_to_save(pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames]))
+        self.data = SaveFrame._data_fields_to_save(
+            pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames])
+        )
         self.metadata = self.master.data_extra
 
     @staticmethod
     def _data_fields_to_save(df):
-        return df[['nome', 'famiglia', 'conteggio']]
+        return df[["nome", "famiglia", "conteggio"]]
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
-            initialdir=self.init_dir,
-            title="Seleziona una cartella"
+            initialdir=self.init_dir, title="Seleziona una cartella"
         )
         self.init_dir = dirname
         self.entry.delete(0, "end")
@@ -180,8 +188,8 @@ class SaveFrame(EntryFrame):
         filename = self.entry.get()
         filename = filename.strip().split(".")[0]
         if filename is not None:
-            self.metadata.to_csv(f"{filename}.csv", sep=";", index=False, mode='w')
-            self.data.to_csv(f"{filename}.csv", sep=";", index=False, mode='a')
+            self.metadata.to_csv(f"{filename}.csv", sep=";", index=False, mode="w")
+            self.data.to_csv(f"{filename}.csv", sep=";", index=False, mode="a")
             custom_logger.info(
                 f"Finished saving data to csv file {os.path.abspath(filename)}."
             )
@@ -202,7 +210,7 @@ class LoadFrame(EntryFrame):
 
     @staticmethod
     def _load_config():
-        with open('./configuration.json', 'r') as f:
+        with open("./configuration.json", "r") as f:
             custom_logger.info("Read configuration file.")
             return json.load(f)
 
@@ -221,10 +229,12 @@ class LoadFrame(EntryFrame):
         filename = self.entry.get().strip()
         if filename is not None and ".csv" in filename:
             try:
-                configuration = pd.DataFrame(LoadFrame._load_config()['pollens'])
-                df_data = pd.read_csv(filename, sep=";", index_col=False, header=2).merge(configuration, how='left', on=['famiglia', 'nome'])
+                configuration = pd.DataFrame(LoadFrame._load_config()["pollens"])
+                df_data = pd.read_csv(
+                    filename, sep=";", index_col=False, header=2
+                ).merge(configuration, how="left", on=["famiglia", "nome"])
                 # Remove pollens without a binding in configuration
-                df_data.dropna(subset=['key'], inplace=True, axis=0)
+                df_data.dropna(subset=["key"], inplace=True, axis=0)
                 # Create pollen frames
                 vals = list(df_data.T.to_dict().values())
                 custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
@@ -234,7 +244,9 @@ class LoadFrame(EntryFrame):
                     f"Finished loading from csv file {os.path.abspath(filename)}."
                 )
                 # Add metadata
-                self.master.data_extra = pd.read_csv(filename, sep=";", index_col=False, nrows=1)
+                self.master.data_extra = pd.read_csv(
+                    filename, sep=";", index_col=False, nrows=1
+                )
             except FileNotFoundError as e:
                 custom_logger.error("File not found.")
                 raise e
@@ -275,37 +287,58 @@ class ExtraInfoFrame(Toplevel):
         self.master = master
         self._grid_config()
         # Operatore
-        ttk.Label(self, text='Operatore', style="Generic.TLabel").grid(row=0, column=0, padx=5, pady=5, sticky="en")
+        ttk.Label(self, text="Operatore", style="Generic.TLabel").grid(
+            row=0, column=0, padx=5, pady=5, sticky="en"
+        )
         self.entry_operatore = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        text = self.master.data_extra.get('operatore', '')
+        text = self.master.data_extra.get("operatore", "")
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.entry_operatore.insert(0, text)
-        self.entry_operatore.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.entry_operatore.grid(
+            row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew"
+        )
         # Data
-        ttk.Label(self, text='Data (gg/mm/aaaa)', style="Generic.TLabel").grid(row=1, column=0, padx=5, pady=5, sticky="en")
+        ttk.Label(self, text="Data (gg/mm/aaaa)", style="Generic.TLabel").grid(
+            row=1, column=0, padx=5, pady=5, sticky="en"
+        )
         self.entry_data = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        text = self.master.data_extra.get('data', ExtraInfoFrame._now_date())
+        text = self.master.data_extra.get("data", ExtraInfoFrame._now_date())
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.entry_data.insert(0, text)
-        self.entry_data.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.entry_data.grid(
+            row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew"
+        )
         self.entry_data.config(
             validate="focusout",
-            validatecommand=(self.register(self._validate_date), '%P'),
-            invalidcommand=self._on_invalid
+            validatecommand=(self.register(self._validate_date), "%P"),
+            invalidcommand=self._on_invalid,
         )
         # Validation
-        self.label_error = ttk.Label(self, text='', style="Error.TLabel")
+        self.label_error = ttk.Label(self, text="", style="Error.TLabel")
         self.label_error.grid(row=2, column=1, padx=5, pady=5, sticky="wn")
         # Vetrino
-        ttk.Label(self, text='Linee vetrino', style="Generic.TLabel").grid(row=3, column=0, padx=5, pady=5, sticky="en")
-        self.text_vetrino = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=55)
-        text = self.master.data_extra.get('linee_vetrino', '')
+        ttk.Label(self, text="Linee vetrino", style="Generic.TLabel").grid(
+            row=3, column=0, padx=5, pady=5, sticky="en"
+        )
+        self.text_vetrino = Text(
+            self,
+            takefocus=True,
+            background="white",
+            padx=5,
+            pady=5,
+            wrap="word",
+            height=5,
+            width=55,
+        )
+        text = self.master.data_extra.get("linee_vetrino", "")
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.text_vetrino.insert("1.0", text)
-        self.text_vetrino.grid(row=3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.text_vetrino.grid(
+            row=3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew"
+        )
         # Save button
         self.button_save = ttk.Button(
             self, text="Salva", command=self._save, style="Generic.TButton"
@@ -340,20 +373,22 @@ class ExtraInfoFrame(Toplevel):
         operator = self.entry_operatore.get().strip()
         data = self.entry_data.get().strip()
         vetrino = self.text_vetrino.get("1.0", END).strip()
-        self.master.data_extra = pd.DataFrame({'operatore': [operator], 'data': [data], 'linee_vetrino': [vetrino]})
+        self.master.data_extra = pd.DataFrame(
+            {"operatore": [operator], "data": [data], "linee_vetrino": [vetrino]}
+        )
         self.destroy()
 
     @staticmethod
     def _now_date():
-        return datetime.now().date().strftime('%d/%m/%Y')
+        return datetime.now().date().strftime("%d/%m/%Y")
 
     def _validate_date(self, date):
         try:
-            datetime.strptime(date, '%d/%m/%Y')
-            self.label_error['text'] = ''
+            datetime.strptime(date, "%d/%m/%Y")
+            self.label_error["text"] = ""
             return True
         except ValueError:
             return False
 
     def _on_invalid(self):
-        self.label_error['text'] = 'La data non è nel formato atteso gg/mm/aaaa'
+        self.label_error["text"] = "La data non è nel formato atteso gg/mm/aaaa"

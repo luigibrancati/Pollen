@@ -3,7 +3,15 @@ import logging
 from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame, ExtraInfoFrame
 from tkinter import ttk, Tk
-from config import _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP, _GOOGLE_FORM_URL, _HELP_TEXT, _GOOGLE_FORM_TEXT
+from config import (
+    _UNDO_KEY,
+    _REDO_KEY,
+    _UNDO_KEY_HELP,
+    _REDO_KEY_HELP,
+    _GOOGLE_FORM_URL,
+    _HELP_TEXT,
+    _GOOGLE_FORM_TEXT,
+)
 from collections import deque
 import webbrowser
 
@@ -61,7 +69,12 @@ class Application(Tk):
         self.button_frame.destroy()
         self.button_frame = ttk.Frame(self)
         self.button_frame.grid(
-            column=0, row=self.rows - 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
+            column=0,
+            row=self.rows - 1,
+            columnspan=self.cols,
+            padx=10,
+            pady=10,
+            sticky="e",
         )
         # Buttons: Reset count, Load, Save, Quit, Help
         self.buttons = [
@@ -101,7 +114,7 @@ class Application(Tk):
         ]
         for i, button in enumerate(self.buttons):
             # button.grid(column=i, row=0, padx=5, sticky="e")
-            button.pack(padx=5, side='left')
+            button.pack(padx=5, side="left")
         # Add footer inside a separate Frame
         # Destroy it before to avoid duplicates due to pack
         self.footer_frame.destroy()
@@ -109,9 +122,16 @@ class Application(Tk):
         self.footer_frame.grid(
             column=0, row=self.rows, columnspan=self.cols, pady=5, padx=10
         )
-        google_form_label = ttk.Label(self.footer_frame, text=_GOOGLE_FORM_TEXT, style='Footer.TLabel', justify='center')
+        google_form_label = ttk.Label(
+            self.footer_frame,
+            text=_GOOGLE_FORM_TEXT,
+            style="Footer.TLabel",
+            justify="center",
+        )
         google_form_label.pack()
-        google_form_label.bind("<Button-1>", lambda e: webbrowser.open_new(_GOOGLE_FORM_URL))
+        google_form_label.bind(
+            "<Button-1>", lambda e: webbrowser.open_new(_GOOGLE_FORM_URL)
+        )
         # Grid config
         self._grid_config()
 
@@ -128,10 +148,7 @@ class Application(Tk):
             p.reset()
 
     def _help(self) -> None:
-        help_frame = HelpFrame(
-            self,
-            _HELP_TEXT.format(_UNDO_KEY_HELP, _REDO_KEY_HELP)
-        )
+        help_frame = HelpFrame(self, _HELP_TEXT.format(_UNDO_KEY_HELP, _REDO_KEY_HELP))
         help_frame.title("Aiuto")
         help_frame.mainloop()
 
@@ -185,9 +202,11 @@ class Application(Tk):
                     pollen["famiglia"],
                     pollen["nome"],
                     pollen["key"],
-                    pollen["use_family"]
+                    pollen["use_family"],
                 )
-            custom_logger.info(f"Added pollen {pln.pollen.famiglia} - {pln.pollen.nome}")
+            custom_logger.info(
+                f"Added pollen {pln.pollen.famiglia} - {pln.pollen.nome}"
+            )
             self.pollen_frames.append(pln)
         # We redraw the grid
         custom_logger.info("Finished adding pollens.")
@@ -195,10 +214,10 @@ class Application(Tk):
 
     @classmethod
     def start(cls) -> A:
-        config = LoadFrame._load_config()['general']
-        app = Application(config['rows'], config['columns'])
+        config = LoadFrame._load_config()["general"]
+        app = Application(config["rows"], config["columns"])
         custom_logger.info("Adding all standard pollens.")
-        app.add_pollens(LoadFrame._load_config()['pollens'])
+        app.add_pollens(LoadFrame._load_config()["pollens"])
         custom_logger.info("Finished adding standard pollens.")
         custom_logger.info("Application generated.")
         return app

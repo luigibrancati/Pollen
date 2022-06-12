@@ -43,10 +43,14 @@ if __name__ == "__main__":
         foreground="black",
         background="white",
         padding=5,
-        font=(_FONT, _FONT_SIZE_MAIN)
+        font=(_FONT, _FONT_SIZE_MAIN),
     )
     style.configure(
-        "BindKey.TLabel", padding=5, borderwidth=3, relief="groove", font=(_FONT, _FONT_SIZE_MAIN)
+        "BindKey.TLabel",
+        padding=5,
+        borderwidth=3,
+        relief="groove",
+        font=(_FONT, _FONT_SIZE_MAIN),
     )
     style.configure("Help.TButton", padding=5, font=(_FONT, _FONT_SIZE_MAIN), width=2)
     style.configure(
@@ -63,14 +67,14 @@ if __name__ == "__main__":
         justify="left",
         foreground="red",
         padding=2,
-        font=(_FONT, _FONT_SIZE_MAIN-1),
+        font=(_FONT, _FONT_SIZE_MAIN - 1),
     )
     style.configure(
         "Footer.TLabel",
         justify="center",
         foreground="gray",
         padding=5,
-        font=(_FONT, _FONT_SIZE_FOOTER, "underline")
+        font=(_FONT, _FONT_SIZE_FOOTER, "underline"),
     )
     # Main event loop
     app.mainloop()
