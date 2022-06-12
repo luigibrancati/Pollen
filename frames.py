@@ -2,7 +2,7 @@ from collections import deque
 from tokenize import String
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
-from tkinter import END, Toplevel, ttk, StringVar, Tk, filedialog, Text
+from tkinter import END, N, Toplevel, ttk, StringVar, Tk, filedialog, Text
 from typing import TypeVar, Union
 import pandas as pd
 import os
@@ -229,10 +229,10 @@ class LoadFrame(EntryFrame):
         filename = self.entry.get().strip()
         if filename is not None and ".csv" in filename:
             try:
-                df = pd.read_csv(filename, sep=";", index_col=False, header=2)
-                vals = list(df.T.to_dict().values())
+                df_data = pd.read_csv(filename, sep=";", index_col=False, header=2)
+                # Create pollen frames
+                vals = list(df_data.T.to_dict().values())
                 custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
-                # Clear previous stuff
                 self.master.clear()
                 self.master.add_pollens(
                     [{**vals[i], "key": bindings[i]} for i in range(len(vals))]
@@ -240,6 +240,8 @@ class LoadFrame(EntryFrame):
                 custom_logger.info(
                     f"Finished loading from csv file {os.path.abspath(filename)}."
                 )
+                # Add metadata
+                self.master.data_extra = pd.read_csv(filename, sep=";", index_col=False, nrows=1)
             except FileNotFoundError as e:
                 custom_logger.error("File not found.")
                 raise e
