@@ -187,15 +187,12 @@ class Application(Tk):
         custom_logger.info("Finished adding pollens.")
         self._draw_grid()
 
-    def add_pollens_from_config(self):
-        custom_logger.info("Adding all standard pollens.")
-        self.add_pollens(LoadFrame._load_config()['pollens'])
-        custom_logger.info("Finished adding standard pollens.")
-
     @classmethod
     def start(cls) -> A:
         config = LoadFrame._load_config()['general']
         app = Application(config['rows'], config['columns'])
-        app.add_pollens_from_config()
+        custom_logger.info("Adding all standard pollens.")
+        app.add_pollens(LoadFrame._load_config()['pollens'])
+        custom_logger.info("Finished adding standard pollens.")
         custom_logger.info("Application generated.")
         return app

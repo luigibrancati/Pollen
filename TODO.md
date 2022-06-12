@@ -12,3 +12,7 @@ Next steps:
 - Add date validation V
 - Create feedback google form for suggestions and bugs V
 - Add link to google form V
+- Aggiungere binding numeri
+- Aggiungere configurazione da json in eseguibile
+- Tradurre l'help
+- Fixare bug del footer

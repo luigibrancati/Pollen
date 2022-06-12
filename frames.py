@@ -112,7 +112,7 @@ class EntryFrame(Toplevel, ABC):
         self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         # Browse button
         self.button_cancel = ttk.Button(
-            self, text="Browse", command=self._select_file, style="Generic.TButton"
+            self, text="Cerca", command=self._select_file, style="Generic.TButton"
         )
         self.button_cancel.grid(row=0, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
@@ -142,7 +142,7 @@ class SaveFrame(EntryFrame):
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
         self.function_button = ttk.Button(
-            self, text="Save", command=self._save, style="Generic.TButton"
+            self, text="Salva", command=self._save, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
         self.data = SaveFrame._data_fields_to_save(pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames]))
@@ -155,7 +155,7 @@ class SaveFrame(EntryFrame):
     def _select_file(self):
         dirname = filedialog.askdirectory(
             initialdir=self.init_dir,
-            title="Select a Directory"
+            title="Seleziona una cartella"
         )
         self.init_dir = dirname
         self.entry.delete(0, "end")
@@ -184,7 +184,7 @@ class LoadFrame(EntryFrame):
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master)
         self.function_button = ttk.Button(
-            self, text="Load", command=self._load, style="Generic.TButton"
+            self, text="Carica", command=self._load, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
@@ -246,7 +246,7 @@ class HelpFrame(Toplevel):
         self.text_widget["textvariable"] = self.help_text
         # Cancel Button
         self.cancel_button = ttk.Button(
-            self, text="Cancel", command=self.destroy, style="Generic.TButton"
+            self, text="Annulla", command=self.destroy, style="Generic.TButton"
         )
         self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.resizable(1, 0)
@@ -296,12 +296,12 @@ class ExtraInfoFrame(Toplevel):
         self.text_vetrino.grid(row=3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
-            self, text="Save", command=self._save, style="Generic.TButton"
+            self, text="Salva", command=self._save, style="Generic.TButton"
         )
         self.button_save.grid(row=4, column=1, padx=5, pady=5, sticky="e")
         # Cancel button
         self.button_cancel = ttk.Button(
-            self, text="Cancel", command=self.destroy, style="Generic.TButton"
+            self, text="Annulla", command=self.destroy, style="Generic.TButton"
         )
         self.button_cancel.grid(row=4, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
