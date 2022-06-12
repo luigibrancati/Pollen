@@ -122,6 +122,7 @@ class Application(Tk):
         id_frame = SaveFrame(self)
         id_frame.title("Save")
         id_frame.data = pd.DataFrame([vars(plnf.pollen) for plnf in self.pollen_frames])
+        id_frame.metadata = self.data_extra
         id_frame.mainloop()
 
     def undo(self, event) -> None:

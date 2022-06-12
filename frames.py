@@ -22,11 +22,11 @@ class PollenFrame(ttk.Frame):
     and its key binding.
     """
 
-    def __init__(self, master: ttk.Frame, fam: str, nome: str, count: int = 0) -> None:
+    def __init__(self, master: ttk.Frame, fam: str, nome: str, use_family: bool, count: int = 0) -> None:
         # Initialize the ttk.Frame class with a master frame
         super().__init__(master)
         self.master = master
-        self.pollen = Pollen(fam, nome, count)
+        self.pollen = Pollen(fam, nome, use_family, count)
         # Stacks for the undo/redo functionality
         # These stacks store the previous states of the Pollen inside this PollenFrame
         # These are used to revert the state of the PollenFrame
@@ -85,13 +85,13 @@ class PollenFrame(ttk.Frame):
 
     @classmethod
     def generate_with_binding(
-        cls: PF, master: ttk.Frame, fam: str, nome: str, key: str, count: int = 0
+        cls: PF, master: ttk.Frame, fam: str, nome: str, key: str, use_family: bool, count: int = 0
     ) -> PF:
         """Class method used to generate a new pollen instance
         while at the same time binding it to a keyboard key.
         """
         # Instantiate pollen object
-        pln = cls(master, fam, nome, count)
+        pln = cls(master, fam, nome, use_family, count)
         # Bind the key to increase the pollen count
         pln.set_binding(key)
         custom_logger.info(f"Generated pollen {nome} bound to key {key}")
@@ -144,6 +144,8 @@ class SaveFrame(EntryFrame):
             self, text="Save", command=self._save, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+        self.data = pd.DataFrame([])
+        self.metadata = pd.DataFrame([])
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
@@ -158,11 +160,12 @@ class SaveFrame(EntryFrame):
         if not os.path.exists("./data"):
             os.makedirs("./data")
         filename = self.entry.get()
-        filename = filename.strip().split(".")[0] + ".csv"
-        if filename is not None and ".csv" in filename:
-            self.data.to_csv(filename, sep=";", index=False)
+        filename = filename.strip().split(".")[0]
+        if filename is not None:
+            self.metadata.to_csv(f"{filename}.csv", sep=";", index=False, mode='w')
+            self.data.to_csv(f"{filename}.csv", sep=";", index=False, mode='a')
             custom_logger.info(
-                f"Finished saving to csv file {os.path.abspath(filename)}."
+                f"Finished saving data to csv file {os.path.abspath(filename)}."
             )
             self.destroy()
         else:
@@ -223,10 +226,10 @@ class LoadFrame(EntryFrame):
             "w",
             "z",
         ]
-        filename = self.entry.get()
+        filename = self.entry.get().strip()
         if filename is not None and ".csv" in filename:
             try:
-                df = pd.read_csv(filename, sep=";", index_col=False)
+                df = pd.read_csv(filename, sep=";", index_col=False, header=2)
                 vals = list(df.T.to_dict().values())
                 custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
                 # Clear previous stuff
