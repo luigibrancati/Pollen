@@ -144,8 +144,12 @@ class SaveFrame(EntryFrame):
             self, text="Save", command=self._save, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
-        self.data = pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames])
+        self.data = SaveFrame._data_fields_to_save(pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames]))
         self.metadata = self.master.data_extra
+
+    @staticmethod
+    def _data_fields_to_save(df):
+        return df[['nome', 'famiglia', 'conteggio']]
 
     def _select_file(self):
         dirname = filedialog.askdirectory(

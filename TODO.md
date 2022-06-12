@@ -8,6 +8,7 @@ Next steps:
 - Add Non Identificati V
 - Add flag to manage name/family V
 - Remove hard coded bindings in load
+- Fix saving V
 - Add date validation
 - Create feedback google form for suggestions and bugs
 - Add link to google form
