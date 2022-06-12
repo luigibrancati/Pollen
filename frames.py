@@ -1,5 +1,5 @@
 from collections import deque
-from tokenize import String
+from datetime import datetime
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
 from tkinter import END, N, Toplevel, ttk, StringVar, Tk, filedialog, Text
@@ -107,7 +107,7 @@ class EntryFrame(Toplevel, ABC):
         self.master = master
         self.init_dir = "."
         self._grid_config()
-        self.entry = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        self.entry = ttk.Entry(self, takefocus=True, style="Generic.TEntry", width=100)
         self.entry.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         # Browse button
         self.button_cancel = ttk.Button(
@@ -149,7 +149,8 @@ class SaveFrame(EntryFrame):
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
-            initialdir=self.init_dir, title="Select a Directory"
+            initialdir=self.init_dir,
+            title="Select a Directory"
         )
         self.init_dir = dirname
         self.entry.delete(0, "end")
@@ -281,7 +282,7 @@ class ExtraInfoFrame(Toplevel):
         super().__init__(master, takefocus=True)
         self.master = master
         self._grid_config()
-        # Vetrino
+        # Operatore
         self.label_operatore = ttk.Label(self, style="Generic.TLabel")
         self.label_operatore.grid(row=0, column=0, padx=5, pady=5, )
         self.label_operatore["text"] = 'Operatore'
@@ -291,32 +292,43 @@ class ExtraInfoFrame(Toplevel):
             text = text.iloc[0]
         self.entry_operatore.insert(0, text)
         self.entry_operatore.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
-        # Operatore
+        # Data
+        self.label_data = ttk.Label(self, style="Generic.TLabel")
+        self.label_data.grid(row=1, column=0, padx=5, pady=5, )
+        self.label_data["text"] = 'Data (gg-mm-aaaa)'
+        self.entry_data = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        text = self.master.data_extra.get('data', ExtraInfoFrame._now_date())
+        if isinstance(text, pd.Series):
+            text = text.iloc[0]
+        self.entry_data.insert(0, text)
+        self.entry_data.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        # Vetrino
         self.label_vetrino = ttk.Label(self, style="Generic.TLabel")
-        self.label_vetrino.grid(row=1, column=0, padx=5, pady=5, sticky="n")
+        self.label_vetrino.grid(row=2, column=0, padx=5, pady=5, sticky="n")
         self.label_vetrino["text"] = 'Linee vetrino'
         self.text_vetrino = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
         text = self.master.data_extra.get('linee_vetrino', '')
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.text_vetrino.insert("1.0", text)
-        self.text_vetrino.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.text_vetrino.grid(row=2, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
             self, text="Save", command=self._save, style="Generic.TButton"
         )
-        self.button_save.grid(row=2, column=1, padx=5, pady=5, sticky="e")
+        self.button_save.grid(row=3, column=1, padx=5, pady=5, sticky="e")
         # Cancel button
         self.button_cancel = ttk.Button(
             self, text="Cancel", command=self.destroy, style="Generic.TButton"
         )
-        self.button_cancel.grid(row=2, column=2, padx=5, pady=5, sticky="e")
+        self.button_cancel.grid(row=3, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
 
     def _grid_config(self):
         self.rowconfigure(0, weight=0)
-        self.rowconfigure(1, weight=4)
-        self.rowconfigure(2, weight=0)
+        self.rowconfigure(1, weight=0)
+        self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight=0)
         self.columnconfigure(0, weight=0)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=0)
@@ -330,7 +342,12 @@ class ExtraInfoFrame(Toplevel):
         self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
 
     def _save(self):
-        operators = self.entry_operatore.get().strip()
+        operator = self.entry_operatore.get().strip()
+        data = self.entry_data.get().strip()
         vetrino = self.text_vetrino.get("1.0", END).strip()
-        self.master.data_extra = pd.DataFrame({'operatore': [operators], 'linee_vetrino': [vetrino]})
+        self.master.data_extra = pd.DataFrame({'operatore': [operator], 'data': [data], 'linee_vetrino': [vetrino]})
         self.destroy()
+
+    @staticmethod
+    def _now_date():
+        return datetime.now().date()
