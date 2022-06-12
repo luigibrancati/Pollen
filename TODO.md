@@ -10,5 +10,5 @@ Next steps:
 - Remove hard coded bindings in load V
 - Fix saving V
 - Add date validation V
-- Create feedback google form for suggestions and bugs
-- Add link to google form
+- Create feedback google form for suggestions and bugs V
+- Add link to google form V
