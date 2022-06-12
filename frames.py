@@ -134,7 +134,7 @@ class EntryFrame(Toplevel, ABC):
         self.columnconfigure(0, weight=3)
         self.columnconfigure(1, weight=0)
         self.columnconfigure(2, weight=0)
-        self.resizable(0, 0)
+        self.resizable(1, 0)
 
     def _update_position(self):
         x = self.master.winfo_x()
@@ -258,10 +258,10 @@ class HelpFrame(Toplevel):
         self.text_widget["textvariable"] = self.help_text
         # Cancel Button
         self.cancel_button = ttk.Button(
-            self, text="Annulla", command=self.destroy, style="Generic.TButton"
+            self, text="Chiudi", command=self.destroy, style="Generic.TButton"
         )
         self.cancel_button.grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        self.resizable(1, 0)
+        self.resizable(0, 0)
 
     def set_help_text(self, text: str) -> None:
         self.help_text.set(text)
