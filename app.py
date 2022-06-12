@@ -33,6 +33,36 @@ class Application(Tk):
         self.redo_stack = deque()
         # Add buttons inside a separate Frame
         self.button_frame = ttk.Frame(self)
+        # Add footer inside a separate Frame
+        self.footer_frame = ttk.Frame(self)
+        # Undo and Redo bindings
+        self.bind(f"<{_UNDO_KEY}>", self.undo)
+        self.bind(f"<{_REDO_KEY}>", self.redo)
+        self.bind("<<Changed>>", lambda event: self.undo_stack.append(event.widget))
+
+    def _grid_config(self):
+        for i in range(self.cols):
+            self.columnconfigure(i, weight=1)
+        for i in range(self.rows):
+            self.rowconfigure(i, weight=1)
+        self.resizable(0, 0)
+
+    def _draw_grid(self):
+        # Place pollens in frame master
+        for i, pollen in enumerate(self.pollen_frames):
+            # Calculate the position of each pollen family
+            col = i % self.cols
+            row = i // self.cols + 1
+            pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
+        # Recompute rows in case they changed (not enough specified in configuration)
+        self.rows = row + 2
+        # Add buttons inside a separate Frame
+        # Destroy it before to avoid duplicates due to pack
+        self.button_frame.destroy()
+        self.button_frame = ttk.Frame(self)
+        self.button_frame.grid(
+            column=0, row=self.rows - 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
+        )
         # Buttons: Reset count, Load, Save, Quit, Help
         self.buttons = [
             ttk.Button(
@@ -69,37 +99,13 @@ class Application(Tk):
                 self.button_frame, text="?", command=self._help, style="Help.TButton"
             ),
         ]
-        # Add footer inside a separate Frame
-        self.footer_frame = ttk.Frame(self)
-        # Undo and Redo bindings
-        self.bind(f"<{_UNDO_KEY}>", self.undo)
-        self.bind(f"<{_REDO_KEY}>", self.redo)
-        self.bind("<<Changed>>", lambda event: self.undo_stack.append(event.widget))
-
-    def _grid_config(self):
-        for i in range(self.cols):
-            self.columnconfigure(i, weight=1)
-        for i in range(self.rows):
-            self.rowconfigure(i, weight=1)
-        self.resizable(0, 0)
-
-    def _draw_grid(self):
-        # Place pollens in frame master
-        for i, pollen in enumerate(self.pollen_frames):
-            # Calculate the position of each pollen family
-            col = i % self.cols
-            row = i // self.cols + 1
-            pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
-        # Recompute rows in case they changed (not enough specified in configuration)
-        self.rows = row + 2
-        # Add buttons
-        self.button_frame.grid(
-            column=0, row=self.rows - 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
-        )
         for i, button in enumerate(self.buttons):
             # button.grid(column=i, row=0, padx=5, sticky="e")
             button.pack(padx=5, side='left')
-        # Footer Label
+        # Add footer inside a separate Frame
+        # Destroy it before to avoid duplicates due to pack
+        self.footer_frame.destroy()
+        self.footer_frame = ttk.Frame(self)
         self.footer_frame.grid(
             column=0, row=self.rows, columnspan=self.cols, pady=5, padx=10
         )
