@@ -36,31 +36,31 @@ class Application(Tk):
         self.buttons = [
             ttk.Button(
                 self.button_frame,
-                text="IDs",
+                text="Extra Info",
                 command=self._extra_info,
                 style="Generic.TButton",
             ),
             ttk.Button(
                 self.button_frame,
-                text="Reset count",
+                text="Reset conteggio",
                 command=self._reset_count,
                 style="Generic.TButton",
             ),
             ttk.Button(
                 self.button_frame,
-                text="Load",
+                text="Carica file",
                 command=self._load,
                 style="Generic.TButton",
             ),
             ttk.Button(
                 self.button_frame,
-                text="Save",
+                text="Salva file",
                 command=self._save,
                 style="Generic.TButton",
             ),
             ttk.Button(
                 self.button_frame,
-                text="Quit",
+                text="Chiudi",
                 command=self.destroy,
                 style="Generic.TButton",
             ),
