@@ -1,12 +1,13 @@
 Next steps:
-
-Luigi:
 - Add Undo/Redo functionality V
 - Add note entry widget to log vetrino lines (numeri con virgola) V
 - Add entry to add operator id V
 - Add data when file is saved inside file V
 - Add data, operator id and vetrino lines inside file (and decide whether it's better to use a csv, excel etc.) V
-Giorgio:
-- Add Altri
-- Add Non Identificati
+- Add Altri V
+- Add Non Identificati V
 - Add flag to manage name/family V
+- Remove hard coded bindings in load
+- Add date validation
+- Create feedback google form for suggestions and bugs
+- Add link to google form
