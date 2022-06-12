@@ -144,8 +144,8 @@ class SaveFrame(EntryFrame):
             self, text="Save", command=self._save, style="Generic.TButton"
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
-        self.data = pd.DataFrame([])
-        self.metadata = pd.DataFrame([])
+        self.data = pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames])
+        self.metadata = self.master.data_extra
 
     def _select_file(self):
         dirname = filedialog.askdirectory(
@@ -282,25 +282,25 @@ class ExtraInfoFrame(Toplevel):
         self.master = master
         self._grid_config()
         # Vetrino
-        self.label_vetrino = ttk.Label(self, style="Generic.TLabel")
-        self.label_vetrino.grid(row=0, column=0, padx=5, pady=5, )
-        self.label_vetrino["text"] = 'Vetrino'
-        self.entry_vetrino = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
-        text = self.master.data_extra.get('Vetrino', '')
+        self.label_operatore = ttk.Label(self, style="Generic.TLabel")
+        self.label_operatore.grid(row=0, column=0, padx=5, pady=5, )
+        self.label_operatore["text"] = 'Operatore'
+        self.entry_operatore = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
+        text = self.master.data_extra.get('operatore', '')
         if isinstance(text, pd.Series):
             text = text.iloc[0]
-        self.entry_vetrino.insert(0, text)
-        self.entry_vetrino.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.entry_operatore.insert(0, text)
+        self.entry_operatore.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Operatore
-        self.label_operator = ttk.Label(self, style="Generic.TLabel")
-        self.label_operator.grid(row=1, column=0, padx=5, pady=5, sticky="n")
-        self.label_operator["text"] = 'Operatore'
-        self.text_operator = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
-        text = self.master.data_extra.get('Operatori', '')
+        self.label_vetrino = ttk.Label(self, style="Generic.TLabel")
+        self.label_vetrino.grid(row=1, column=0, padx=5, pady=5, sticky="n")
+        self.label_vetrino["text"] = 'Linee vetrino'
+        self.text_vetrino = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
+        text = self.master.data_extra.get('linee_vetrino', '')
         if isinstance(text, pd.Series):
             text = text.iloc[0]
-        self.text_operator.insert("1.0", text)
-        self.text_operator.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.text_vetrino.insert("1.0", text)
+        self.text_vetrino.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
             self, text="Save", command=self._save, style="Generic.TButton"
@@ -330,7 +330,7 @@ class ExtraInfoFrame(Toplevel):
         self.geometry("+%d+%d" % (x + w // 3, y + h // 3))
 
     def _save(self):
-        operators = self.text_operator.get("1.0", END).strip()
-        vetrino = self.entry_vetrino.get().strip()
-        self.master.data_extra = pd.DataFrame({'Operatori': [operators], 'Vetrino': [vetrino]})
+        operators = self.entry_operatore.get().strip()
+        vetrino = self.text_vetrino.get("1.0", END).strip()
+        self.master.data_extra = pd.DataFrame({'operatore': [operators], 'linee_vetrino': [vetrino]})
         self.destroy()
