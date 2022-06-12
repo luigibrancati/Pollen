@@ -30,6 +30,8 @@
         {"famiglia": "Salicaceae", "nome": "Salix", "key": "s", "use_family": false},
         {"famiglia": "Ulmaceae", "nome": "Ulmaceae", "key": "t", "use_family": true},
         {"famiglia": "Uritcaceae", "nome": "Uritcaceae", "key": "u", "use_family": true},
-        {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v", "use_family": true}
+        {"famiglia": "Alternaria", "nome": "Alternaria", "key": "v", "use_family": true},
+        {"famiglia": "Altro", "nome": "Altri", "key": "x", "use_family": true},
+        {"famiglia": "Non Identificato", "nome": "Non Identificato", "key": "z", "use_family": true}
     ]
 }
