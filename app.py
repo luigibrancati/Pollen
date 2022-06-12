@@ -5,7 +5,6 @@ from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame, ExtraInfoFrame
 from tkinter import ttk, Tk
 from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP
 from collections import deque
-import json
 
 custom_logger = logging.getLogger(name="pollen_logger")
 A = TypeVar("A", bound="Application")
@@ -110,17 +109,17 @@ class Application(Tk):
             self,
             f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY_HELP}\n- Redo: {_REDO_KEY_HELP}"
         )
-        help_frame.title("Help")
+        help_frame.title("Aiuto")
         help_frame.mainloop()
 
     def _load(self) -> None:
         id_frame = LoadFrame(self)
-        id_frame.title("Load")
+        id_frame.title("Carica file")
         id_frame.mainloop()
 
     def _save(self) -> None:
         id_frame = SaveFrame(self)
-        id_frame.title("Save")
+        id_frame.title("Salva file")
         id_frame.mainloop()
 
     def undo(self, event) -> None:
@@ -159,25 +158,26 @@ class Application(Tk):
                 )
             except KeyError:
                 pln = PollenFrame.generate_with_binding(
-                    self, pollen["famiglia"], pollen["nome"], pollen["key"], pollen["use_family"]
+                    self,
+                    pollen["famiglia"],
+                    pollen["nome"],
+                    pollen["key"],
+                    pollen["use_family"]
                 )
             custom_logger.info(f"Added pollen {pln.pollen.famiglia} - {pln.pollen.nome}")
             self.pollen_frames.append(pln)
         # We redraw the grid
-        # This is need when we need to add new pollens later
         custom_logger.info("Finished adding pollens.")
         self._draw_grid()
 
-    def add_standard_pollens(self):
-        with open('./configuration.json', 'r') as f:
-            custom_logger.info("Adding all standard pollens.")
-            self.add_pollens(json.load(f)['pollens'])
-            custom_logger.info("Finished adding standard pollens.")
-        self._draw_grid()
+    def add_pollens_from_config(self):
+        custom_logger.info("Adding all standard pollens.")
+        self.add_pollens(LoadFrame._load_config()['pollens'])
+        custom_logger.info("Finished adding standard pollens.")
 
     @classmethod
     def start(cls, cols: int = 5) -> A:
         app = Application(cols)
-        app.add_standard_pollens()
+        app.add_pollens_from_config()
         custom_logger.info("Application generated.")
         return app

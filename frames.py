@@ -2,12 +2,13 @@ from collections import deque
 from datetime import datetime
 from config import _TLW_HEIGHT, _TLW_WIDTH
 from pollen_class import Pollen
-from tkinter import END, N, Toplevel, ttk, StringVar, Tk, filedialog, Text
+from tkinter import END, Toplevel, ttk, StringVar, Tk, filedialog, Text
 from typing import TypeVar, Union
 import pandas as pd
 import os
 import logging
 from abc import ABC, abstractmethod
+import json
 
 
 custom_logger = logging.getLogger(name="pollen_logger")
@@ -187,6 +188,12 @@ class LoadFrame(EntryFrame):
         )
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
+    @staticmethod
+    def _load_config():
+        with open('./configuration.json', 'r') as f:
+            custom_logger.info("Read configuration file.")
+            return json.load(f)
+
     def _select_file(self):
         filename = filedialog.askopenfilename(
             initialdir=self.init_dir,
@@ -199,49 +206,18 @@ class LoadFrame(EntryFrame):
 
     def _load(self) -> None:
         custom_logger.info("Load data from csv file.")
-        bindings = [
-            "Up",
-            "Down",
-            "Left",
-            "Right",
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
-            "k",
-            "l",
-            "m",
-            "n",
-            "o",
-            "p",
-            "q",
-            "r",
-            "s",
-            "t",
-            "u",
-            "v",
-            "x",
-            "y",
-            "w",
-            "z",
-        ]
         filename = self.entry.get().strip()
         if filename is not None and ".csv" in filename:
             try:
-                df_data = pd.read_csv(filename, sep=";", index_col=False, header=2)
+                configuration = pd.DataFrame(LoadFrame._load_config()['pollens'])
+                df_data = pd.read_csv(filename, sep=";", index_col=False, header=2).merge(configuration, how='left', on=['famiglia', 'nome'])
+                # Remove pollens without a binding in configuration
+                df_data.dropna(subset=['key'], inplace=True, axis=0)
                 # Create pollen frames
                 vals = list(df_data.T.to_dict().values())
                 custom_logger.debug(f"Loaded pandas dataframe with data {vals}")
                 self.master.clear()
-                self.master.add_pollens(
-                    [{**vals[i], "key": bindings[i]} for i in range(len(vals))]
-                )
+                self.master.add_pollens(vals)
                 custom_logger.info(
                     f"Finished loading from csv file {os.path.abspath(filename)}."
                 )
