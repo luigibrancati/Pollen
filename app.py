@@ -3,8 +3,9 @@ import logging
 from typing import TypeVar, Dict, List
 from frames import SaveFrame, LoadFrame, PollenFrame, HelpFrame, ExtraInfoFrame
 from tkinter import ttk, Tk
-from config import _HEIGHT, _WIDTH, _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP
+from config import _UNDO_KEY, _REDO_KEY, _UNDO_KEY_HELP, _REDO_KEY_HELP, _GOOGLE_FORM_URL, _HELP_TEXT, _GOOGLE_FORM_TEXT
 from collections import deque
+import webbrowser
 
 custom_logger = logging.getLogger(name="pollen_logger")
 A = TypeVar("A", bound="Application")
@@ -15,10 +16,11 @@ class Application(Tk):
     along with external buttons.
     """
 
-    def __init__(self, cols: int) -> None:
+    def __init__(self, rows: int = 2, cols: int = 1) -> None:
         super().__init__()
         self.title("Pollen Register")
         self.cols = cols
+        self.rows = rows
         # A list to keep all pollen frames
         self.pollen_frames = []
         self.data_extra = pd.DataFrame([])
@@ -67,30 +69,45 @@ class Application(Tk):
                 self.button_frame, text="?", command=self._help, style="Help.TButton"
             ),
         ]
+        # Add footer inside a separate Frame
+        self.footer_frame = ttk.Frame(self)
         # Undo and Redo bindings
         self.bind(f"<{_UNDO_KEY}>", self.undo)
         self.bind(f"<{_REDO_KEY}>", self.redo)
         self.bind("<<Changed>>", lambda event: self.undo_stack.append(event.widget))
 
     def _grid_config(self):
-        self.geometry(f"{_WIDTH}x{_HEIGHT}")
         for i in range(self.cols):
             self.columnconfigure(i, weight=1)
+        for i in range(self.rows):
+            self.rowconfigure(i, weight=1)
         self.resizable(0, 0)
 
     def _draw_grid(self):
-        self._grid_config()
         # Place pollens in frame master
         for i, pollen in enumerate(self.pollen_frames):
             # Calculate the position of each pollen family
             col = i % self.cols
             row = i // self.cols + 1
             pollen.grid(column=col, row=row, padx=10, pady=10, sticky="w")
+        # Recompute rows in case they changed (not enough specified in configuration)
+        self.rows = row + 2
+        # Add buttons
         self.button_frame.grid(
-            column=0, row=row + 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
+            column=0, row=self.rows - 1, columnspan=self.cols, padx=10, pady=10, sticky="e"
         )
         for i, button in enumerate(self.buttons):
-            button.grid(column=i, row=0, padx=5, sticky="e")
+            # button.grid(column=i, row=0, padx=5, sticky="e")
+            button.pack(padx=5, side='left')
+        # Footer Label
+        self.footer_frame.grid(
+            column=0, row=self.rows, columnspan=self.cols, pady=5, padx=10
+        )
+        google_form_label = ttk.Label(self.footer_frame, text=_GOOGLE_FORM_TEXT, style='Footer.TLabel', justify='center')
+        google_form_label.pack()
+        google_form_label.bind("<Button-1>", lambda e: webbrowser.open_new(_GOOGLE_FORM_URL))
+        # Grid config
+        self._grid_config()
 
     def _extra_info(self) -> None:
         id_frame = ExtraInfoFrame(self)
@@ -107,7 +124,7 @@ class Application(Tk):
     def _help(self) -> None:
         help_frame = HelpFrame(
             self,
-            f"Each keyboard key is bound to a specific pollen family/name and is shown on the main window.\nOther keys:\n- Undo: {_UNDO_KEY_HELP}\n- Redo: {_REDO_KEY_HELP}"
+            _HELP_TEXT.format(_UNDO_KEY_HELP, _REDO_KEY_HELP)
         )
         help_frame.title("Aiuto")
         help_frame.mainloop()
@@ -176,8 +193,9 @@ class Application(Tk):
         custom_logger.info("Finished adding standard pollens.")
 
     @classmethod
-    def start(cls, cols: int = 5) -> A:
-        app = Application(cols)
+    def start(cls) -> A:
+        config = LoadFrame._load_config()['general']
+        app = Application(config['rows'], config['columns'])
         app.add_pollens_from_config()
         custom_logger.info("Application generated.")
         return app

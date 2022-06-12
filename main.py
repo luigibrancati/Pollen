@@ -1,7 +1,7 @@
 from datetime import datetime
 from app import Application
 from tkinter import ttk
-from config import _FONT, _FONT_SIZE_MAIN, _FONT_SIZE_HELP
+from config import _FONT, _FONT_SIZE_MAIN, _FONT_SIZE_HELP, _FONT_SIZE_FOOTER
 import logging
 import os
 import platform
@@ -64,6 +64,13 @@ if __name__ == "__main__":
         foreground="red",
         padding=2,
         font=(_FONT, _FONT_SIZE_MAIN-1),
+    )
+    style.configure(
+        "Footer.TLabel",
+        justify="center",
+        foreground="gray",
+        padding=5,
+        font=(_FONT, _FONT_SIZE_FOOTER),
     )
     # Main event loop
     app.mainloop()

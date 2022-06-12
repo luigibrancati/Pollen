@@ -1,4 +1,8 @@
 {
+    "general": {
+        "rows": 6,
+        "columns": 5
+    },
     "pollens": [
         {"famiglia": "Aceraceae", "nome": "Aceraceae", "key": "Up", "use_family": true},
         {"famiglia": "Cannabbaceae", "nome": "Cannabbaceae", "key": "Down", "use_family": true},
