@@ -1,5 +1,5 @@
-_WIDTH = 1280
-_HEIGHT = 350
+# _WIDTH = 1280
+# _HEIGHT = 350
 _TLW_HEIGHT = 40
 _TLW_WIDTH = 340
 # Ctrl+z

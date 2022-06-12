@@ -70,7 +70,7 @@ if __name__ == "__main__":
         justify="center",
         foreground="gray",
         padding=5,
-        font=(_FONT, _FONT_SIZE_FOOTER),
+        font=(_FONT, _FONT_SIZE_FOOTER, "underline")
     )
     # Main event loop
     app.mainloop()
