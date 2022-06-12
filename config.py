@@ -9,3 +9,5 @@ _UNDO_KEY_HELP = "Ctrl+z"
 _REDO_KEY = "Control-Key-Z"
 _REDO_KEY_HELP = "Ctrl+Shift+z"
 _FONT = "Arial"
+_FONT_SIZE_MAIN = 10
+_FONT_SIZE_HELP = 11

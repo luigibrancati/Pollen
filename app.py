@@ -170,7 +170,7 @@ class Application(Tk):
         self._draw_grid()
 
     def add_standard_pollens(self):
-        with open('./pollen_configuration.json', 'r') as f:
+        with open('./configuration.json', 'r') as f:
             custom_logger.info("Adding all standard pollens.")
             self.add_pollens(json.load(f)['pollens'])
             custom_logger.info("Finished adding standard pollens.")
