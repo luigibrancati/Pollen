@@ -263,9 +263,7 @@ class ExtraInfoFrame(Toplevel):
         self.master = master
         self._grid_config()
         # Operatore
-        self.label_operatore = ttk.Label(self, style="Generic.TLabel")
-        self.label_operatore.grid(row=0, column=0, padx=5, pady=5, )
-        self.label_operatore["text"] = 'Operatore'
+        ttk.Label(self, text='Operatore', style="Generic.TLabel").grid(row=0, column=0, padx=5, pady=5, sticky="en")
         self.entry_operatore = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
         text = self.master.data_extra.get('operatore', '')
         if isinstance(text, pd.Series):
@@ -273,46 +271,51 @@ class ExtraInfoFrame(Toplevel):
         self.entry_operatore.insert(0, text)
         self.entry_operatore.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Data
-        self.label_data = ttk.Label(self, style="Generic.TLabel")
-        self.label_data.grid(row=1, column=0, padx=5, pady=5, )
-        self.label_data["text"] = 'Data (gg-mm-aaaa)'
+        ttk.Label(self, text='Data (gg/mm/aaaa)', style="Generic.TLabel").grid(row=1, column=0, padx=5, pady=5, sticky="en")
         self.entry_data = ttk.Entry(self, takefocus=True, style="Generic.TEntry")
         text = self.master.data_extra.get('data', ExtraInfoFrame._now_date())
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.entry_data.insert(0, text)
         self.entry_data.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.entry_data.config(
+            validate="focusout",
+            validatecommand=(self.register(self._validate_date), '%P'),
+            invalidcommand=self._on_invalid
+        )
+        # Validation
+        self.label_error = ttk.Label(self, text='', style="Error.TLabel")
+        self.label_error.grid(row=2, column=1, padx=5, pady=5, sticky="wn")
         # Vetrino
-        self.label_vetrino = ttk.Label(self, style="Generic.TLabel")
-        self.label_vetrino.grid(row=2, column=0, padx=5, pady=5, sticky="n")
-        self.label_vetrino["text"] = 'Linee vetrino'
-        self.text_vetrino = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=30)
+        ttk.Label(self, text='Linee vetrino', style="Generic.TLabel").grid(row=3, column=0, padx=5, pady=5, sticky="en")
+        self.text_vetrino = Text(self, takefocus=True, background='white', padx=5, pady=5, wrap='word', height=5, width=55)
         text = self.master.data_extra.get('linee_vetrino', '')
         if isinstance(text, pd.Series):
             text = text.iloc[0]
         self.text_vetrino.insert("1.0", text)
-        self.text_vetrino.grid(row=2, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.text_vetrino.grid(row=3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
         # Save button
         self.button_save = ttk.Button(
             self, text="Save", command=self._save, style="Generic.TButton"
         )
-        self.button_save.grid(row=3, column=1, padx=5, pady=5, sticky="e")
+        self.button_save.grid(row=4, column=1, padx=5, pady=5, sticky="e")
         # Cancel button
         self.button_cancel = ttk.Button(
             self, text="Cancel", command=self.destroy, style="Generic.TButton"
         )
-        self.button_cancel.grid(row=3, column=2, padx=5, pady=5, sticky="e")
+        self.button_cancel.grid(row=4, column=2, padx=5, pady=5, sticky="e")
         self._update_position()
 
     def _grid_config(self):
         self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=0)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=0)
+        self.rowconfigure(2, weight=0)
+        self.rowconfigure(3, weight=1)
+        self.rowconfigure(4, weight=0)
         self.columnconfigure(0, weight=0)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=0)
-        self.resizable(0, 1)
+        self.resizable(1, 1)
 
     def _update_position(self):
         x = self.master.winfo_x()
@@ -331,3 +334,14 @@ class ExtraInfoFrame(Toplevel):
     @staticmethod
     def _now_date():
         return datetime.now().date().strftime('%d/%m/%Y')
+
+    def _validate_date(self, date):
+        try:
+            datetime.strptime(date, '%d/%m/%Y')
+            self.label_error['text'] = ''
+            return True
+        except ValueError:
+            return False
+
+    def _on_invalid(self):
+        self.label_error['text'] = 'La data non è nel formato atteso gg/mm/aaaa'

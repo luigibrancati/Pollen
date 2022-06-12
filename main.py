@@ -58,5 +58,12 @@ if __name__ == "__main__":
         padding=10,
         font=(_FONT, _FONT_SIZE_HELP),
     )
+    style.configure(
+        "Error.TLabel",
+        justify="left",
+        foreground="red",
+        padding=2,
+        font=(_FONT, _FONT_SIZE_MAIN-1),
+    )
     # Main event loop
     app.mainloop()
