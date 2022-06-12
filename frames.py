@@ -354,4 +354,4 @@ class ExtraInfoFrame(Toplevel):
 
     @staticmethod
     def _now_date():
-        return datetime.now().date()
+        return datetime.now().date().strftime('%d/%m/%Y')
