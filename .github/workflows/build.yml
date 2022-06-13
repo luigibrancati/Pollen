@@ -1,13 +1,9 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Package exe with PyInstaller - Windows
+name: Pollen - Windows
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: workflow_dispatch
 
 jobs:
   build:
@@ -24,4 +20,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: my-exe
-        path: src/releases/windows
+        path: src/dist/windows # or path/to/artifact
