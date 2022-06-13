@@ -17,5 +17,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: my-exe
-        path: src/dist/windows # or path/to/artifact
+        name: Pollen
+        path: src/releases/windows # or path/to/artifact
