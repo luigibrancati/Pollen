@@ -15,7 +15,7 @@ jobs:
       with:
         path: src
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v2
       with:
         name: Pollen
         path: |
