@@ -2,6 +2,8 @@
 
 Pollen register to monitor pollens.
 
+[![Pollen - Windows](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml)
+
 ### How to build the EXE for Windows
 
 To build the executable to be run on Windows (10 and above), you must be on Windows. Open a terminal inside the root folder of the repository and run:
