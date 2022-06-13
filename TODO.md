@@ -13,6 +13,6 @@ Next steps:
 - Create feedback google form for suggestions and bugs V
 - Add link to google form V
 - Aggiungere binding numeri V
-- Aggiungere configurazione da json in eseguibile
-- Tradurre l'help
+- Aggiungere configurazione da json in eseguibile (se non trovi il file, rompiti) V
+- Tradurre l'help V
 - Fixare bug del footer V
