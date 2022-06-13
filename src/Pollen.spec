@@ -1,45 +1,29 @@
-# -*- mode: python ; coding: utf-8 -*-
+import gooey
+gooey_root = os.path.dirname(gooey.__file__)
+gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
+gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
 
+a = Analysis(['main.py'],
+             pathex=[],
+             hiddenimports=[],
+             hookspath=None,
+             runtime_hooks=None,
+             )
+pyz = PYZ(a.pure)
 
-block_cipher = None
+options = [('u', None, 'OPTION')]
 
-
-a = Analysis(
-    ['main.py'],
-    pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[],
-    hookspath=[],
-    hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
-    noarchive=False,
-)
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    [],
-    name='Pollen',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-    icon='..\\icons\\pollen.ico',
-)
+exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
+          options,
+          gooey_languages, # Add them in to collected files
+          gooey_images, # Same here.
+          name='Pollen',
+          debug=False,
+          strip=None,
+          upx=True,
+          console=False,
+          icon=os.path.join('..', 'icons', 'pollen.ico'))

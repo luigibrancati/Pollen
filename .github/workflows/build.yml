@@ -3,7 +3,11 @@
 
 name: Pollen - Windows
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -14,8 +18,15 @@ jobs:
       uses: JackMcKew/pyinstaller-action-windows@main
       with:
         path: src
-
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
-        name: my-exe
-        path: src/dist/windows # or path/to/artifact
+        name: Pollen_windows
+        path: src/dist/windows
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen_windows
+        path: configuration.json
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen_windows
+        path: LEGGIMI.txt
