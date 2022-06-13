@@ -1,7 +1,7 @@
 from datetime import datetime
 from app import Application
 from tkinter import ttk
-from config import _FONT
+from config import _FONT, _FONT_SIZE_MAIN, _FONT_SIZE_HELP, _FONT_SIZE_FOOTER
 import logging
 import os
 import platform
@@ -32,23 +32,27 @@ if __name__ == "__main__":
     custom_logger.info("Starting app")
 
     # Generate app
-    app = Application.generate_starting_frame()
+    app = Application.start()
 
     # Custom styles
     style = ttk.Style(app)
-    style.configure("Generic.TLabel", padding=5, font=(_FONT, 10))
-    style.configure("Generic.TButton", padding=5, font=(_FONT, 10))
+    style.configure("Generic.TLabel", padding=5, font=(_FONT, _FONT_SIZE_MAIN))
+    style.configure("Generic.TButton", padding=5, font=(_FONT, _FONT_SIZE_MAIN))
     style.configure(
         "Generic.TEntry",
         foreground="black",
         background="white",
         padding=5,
-        font=(_FONT, 10)
+        font=(_FONT, _FONT_SIZE_MAIN),
     )
     style.configure(
-        "BindKey.TLabel", padding=5, borderwidth=3, relief="groove", font=(_FONT, 10)
+        "BindKey.TLabel",
+        padding=5,
+        borderwidth=3,
+        relief="groove",
+        font=(_FONT, _FONT_SIZE_MAIN),
     )
-    style.configure("Help.TButton", padding=5, font=(_FONT, 10), width=2)
+    style.configure("Help.TButton", padding=5, font=(_FONT, _FONT_SIZE_MAIN), width=2)
     style.configure(
         "Help.TLabel",
         justify="left",
@@ -56,8 +60,21 @@ if __name__ == "__main__":
         foreground="black",
         background="white",
         padding=10,
-        font=(_FONT, 11),
+        font=(_FONT, _FONT_SIZE_HELP),
     )
-
+    style.configure(
+        "Error.TLabel",
+        justify="left",
+        foreground="red",
+        padding=2,
+        font=(_FONT, _FONT_SIZE_MAIN - 1),
+    )
+    style.configure(
+        "Footer.TLabel",
+        justify="center",
+        foreground="gray",
+        padding=5,
+        font=(_FONT, _FONT_SIZE_FOOTER, "underline"),
+    )
     # Main event loop
     app.mainloop()

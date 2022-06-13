@@ -1,12 +1,18 @@
 Next steps:
-
-Luigi:
-- Add Undo/Redo functionality
-- Add note entry widget to log vetrino lines (numeri con virgola)
-- Add entry to add operator id
-- Add data when file is saved inside file
-- Add data, operator id and vetrino lines inside file (and decide whether it's better to use a csv, excel etc.)
-Giorgio:
-- Add Altri
-- Add Non Identificati
-- Add flag to manage name/family
+- Add Undo/Redo functionality V
+- Add note entry widget to log vetrino lines (numeri con virgola) V
+- Add entry to add operator id V
+- Add data when file is saved inside file V
+- Add data, operator id and vetrino lines inside file (and decide whether it's better to use a csv, excel etc.) V
+- Add Altri V
+- Add Non Identificati V
+- Add flag to manage name/family V
+- Remove hard coded bindings in load V
+- Fix saving V
+- Add date validation V
+- Create feedback google form for suggestions and bugs V
+- Add link to google form V
+- Aggiungere binding numeri V
+- Aggiungere configurazione da json in eseguibile (se non trovi il file, rompiti) V
+- Tradurre l'help V
+- Fixare bug del footer V
