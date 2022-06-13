@@ -21,9 +21,9 @@ exe = EXE(pyz,
           options,
           gooey_languages, # Add them in to collected files
           gooey_images, # Same here.
-          name='main',
+          name='Pollen',
           debug=False,
           strip=None,
           upx=True,
           console=False,
-          icon=os.path.join(gooey_root, 'images', 'program_icon.ico'))
+          icon=os.path.join(gooey_root, 'icons', 'pollen.ico'))
