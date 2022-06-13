@@ -1,7 +1,7 @@
 import gooey
 gooey_root = os.path.dirname(gooey.__file__)
 gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
-gooey_icons = Tree(os.path.join(gooey_root, 'icons'), prefix = 'gooey/icons')
+gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
 
 a = Analysis(['main.py'],
              pathex=[],
@@ -20,10 +20,10 @@ exe = EXE(pyz,
           a.datas,
           options,
           gooey_languages, # Add them in to collected files
-          gooey_icons, # Same here.
+          gooey_images, # Same here.
           name='Pollen',
           debug=False,
           strip=None,
           upx=True,
           console=False,
-          icon=os.path.join(gooey_root, 'icons', 'pollen.ico'))
+          icon=os.path.join('icons', 'pollen.ico'))
