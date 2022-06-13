@@ -20,13 +20,13 @@ jobs:
         path: src
     - uses: actions/upload-artifact@v3
       with:
-        name: Pollen
+        name: Pollen_windows
         path: src/dist/windows
     - uses: actions/upload-artifact@v3
       with:
-        name: Pollen
+        name: Pollen_windows
         path: configuration.json
     - uses: actions/upload-artifact@v3
       with:
-        name: Pollen
+        name: Pollen_windows
         path: LEGGIMI.txt
