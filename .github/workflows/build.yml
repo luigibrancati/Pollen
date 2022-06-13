@@ -18,4 +18,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Pollen
-        path: src/releases/windows # or path/to/artifact
+        path: src/dist/windows
