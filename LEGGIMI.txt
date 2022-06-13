@@ -1,0 +1,24 @@
+Pollen è una piccola applicazione che permette di conteggiare i pollini che vengono trovati sui vetrini.
+
+# Come usare l'applicazione
+
+L'applicazione dovrebbe essere già utilizzabile così come viene scaricata. Ogni polline è associato ad una chiave e premendo la chiave corrispondente si aumenta il conteggio.
+Per annullare un'operazione, premere Ctrl+Z, per ripetere Ctrl+Shift+Z.
+
+# Tasti
+
+Nella schermata sono presenti alcuni tasti:
+- "Extra Info": per aggiungere/modificare le info relative a data, operatore e linee del vetrino;
+- "Reset Conteggio": resetta il conteggio attuale, mettendo tutti i pollini a 0
+- "Carica file": carica un file CSV con le info di un conteggio, con una struttura accettata dall'applicazione (si veda dopo)
+- "Salva file": salva l'attuale conteggio, comprese le info inserite in "Extra Info", in un file CSV
+- "Chiudi": chiude l'applicazione
+- "?": mostra la finestra di aiuto
+
+# Aggiungere pollini e cambiare le chiavi
+
+Dal file di configurazione `configuration.json`, che potete aprire con un qualunque editor di testo, potete:
+- Aggiungere pollini: copiate una delle righe già presenti dopo la chiave "pollens" e sistemate i vari campi come preferite 
+- Cambiare la chiave associata ad un polline: dopo la chiave "pollens" andate alla riga corrispondente alla famiglia/nome del polline che volete modificare e modificate il campo "key"
+- Scegliere se mostrare il nome o la famiglia del polline: come sopra, modificate la chiave use_family mettendo il valore true se volete usare la famiglia, false se volete usare il nome
+- Cambiare il numero di colonne della griglia: modificare il campo "columns"
