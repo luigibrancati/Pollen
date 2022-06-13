@@ -26,4 +26,4 @@ exe = EXE(pyz,
           strip=None,
           upx=True,
           console=False,
-          icon=os.path.join('icons', 'pollen.ico'))
+          icon=os.path.join('..', 'icons', 'pollen.ico'))
