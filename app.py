@@ -137,7 +137,6 @@ class Application(Tk):
 
     def _extra_info(self) -> None:
         id_frame = ExtraInfoFrame(self)
-        id_frame.title("Exrta info")
         id_frame.mainloop()
 
     def _reset_count(self):
@@ -149,17 +148,14 @@ class Application(Tk):
 
     def _help(self) -> None:
         help_frame = HelpFrame(self, _HELP_TEXT.format(_UNDO_KEY_HELP, _REDO_KEY_HELP))
-        help_frame.title("Aiuto")
         help_frame.mainloop()
 
     def _load(self) -> None:
         id_frame = LoadFrame(self)
-        id_frame.title("Carica file")
         id_frame.mainloop()
 
     def _save(self) -> None:
         id_frame = SaveFrame(self)
-        id_frame.title("Salva file")
         id_frame.mainloop()
 
     def undo(self, event) -> None:

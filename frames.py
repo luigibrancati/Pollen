@@ -163,6 +163,7 @@ class SaveFrame(EntryFrame):
         self.function_button = ttk.Button(
             self, text="Salva", command=self._save, style="Generic.TButton"
         )
+        self.title("Salva file")
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
         self.data = SaveFrame._data_fields_to_save(
             pd.DataFrame([vars(plnf.pollen) for plnf in self.master.pollen_frames])
@@ -206,6 +207,7 @@ class LoadFrame(EntryFrame):
         self.function_button = ttk.Button(
             self, text="Carica", command=self._load, style="Generic.TButton"
         )
+        self.title("Carica file")
         self.function_button.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
     @staticmethod
@@ -262,6 +264,7 @@ class HelpFrame(Toplevel):
     def __init__(self, master: Union[ttk.Frame, Tk], help_str: str) -> None:
         super().__init__(master)
         self.master = master
+        self.title("Aiuto")
         # Help text
         self.help_text = StringVar()
         self.help_text.set(help_str)
@@ -285,6 +288,7 @@ class ExtraInfoFrame(Toplevel):
     def __init__(self, master: Union[ttk.Frame, Tk]) -> None:
         super().__init__(master, takefocus=True)
         self.master = master
+        self.title("Extra info")
         self._grid_config()
         # Operatore
         ttk.Label(self, text="Operatore", style="Generic.TLabel").grid(
