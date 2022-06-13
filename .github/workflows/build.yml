@@ -14,8 +14,11 @@ jobs:
       uses: JackMcKew/pyinstaller-action-windows@main
       with:
         path: src
-
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Pollen
-        path: src/releases/windows # or path/to/artifact
+        path: src/dist/windows
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen
+        path: src/configuration.json
