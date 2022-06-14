@@ -44,6 +44,8 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: Pollen_windows
+    - run: 'ls -R'
+      name: Seeing files
     - name: upload windows artifact
       uses: actions/upload-release-asset@v1
       env:
@@ -52,4 +54,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./Pollen_windows
         asset_name: Pollen_windows
-        asset_content_type: application/zip
+        asset_content_type: application/gzip
