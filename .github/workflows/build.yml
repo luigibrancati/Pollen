@@ -7,8 +7,6 @@ on:
   push:
     tags:
       - v**
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -20,7 +18,7 @@ jobs:
       with:
         draft: true
         prerelease: false
-        release_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
         tag_name: ${{ github.ref }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
