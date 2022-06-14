@@ -45,6 +45,8 @@ jobs:
       with:
         name: Pollen_windows
         path: downloaded_artifact
+    - run: 'zip -p Pollen_windows.zip downloaded_artifact'
+      name: Zipping artifact
     - run: 'ls -R'
       name: Seeing files
     - name: upload windows artifact
@@ -53,6 +55,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Pollen_windows
-        asset_name: Pollen_windows
-        asset_content_type: application/gzip
+        asset_path: ./Pollen_windows.zip
+        asset_name: Pollen_windows.zip
+        asset_content_type: application/zip
