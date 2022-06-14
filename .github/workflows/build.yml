@@ -45,7 +45,7 @@ jobs:
       with:
         name: Pollen_windows
         path: downloaded_artifact
-    - run: 'zip -p Pollen_windows.zip downloaded_artifact'
+    - run: 'cd downloaded_artifact && zip -p ../Pollen_windows.zip * && cd -'
       name: Zipping artifact
     - run: 'ls -R'
       name: Seeing files
