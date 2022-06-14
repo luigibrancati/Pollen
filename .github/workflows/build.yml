@@ -44,6 +44,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: Pollen_windows
+        path: downloaded_artifact
     - run: 'ls -R'
       name: Seeing files
     - name: upload windows artifact
