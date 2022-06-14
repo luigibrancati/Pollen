@@ -41,6 +41,9 @@ jobs:
       with:
         name: Pollen_windows
         path: LEGGIMI.txt
+    - uses: actions/download-artifact@v3
+      with:
+        name: Pollen_windows
     - name: upload windows artifact
       uses: actions/upload-release-asset@v1
       env:
