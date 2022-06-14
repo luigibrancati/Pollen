@@ -2,7 +2,7 @@
 
 Pollen register to monitor pollens.
 
-[![Pollen - Windows](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml)
+[![Pollen - Windows](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml/badge.svg)](https://github.com/luigibrancati/Pollen/actions/workflows/build.yml)
 
 ### How to build the EXE for Windows
 
