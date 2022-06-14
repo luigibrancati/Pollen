@@ -8,13 +8,15 @@ on:
     tags:
       - v**
 
-jobs:   
-  build_windows:
+jobs:
+  create_release:
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release_step.outputs.upload_url }}
     steps:
     - name: create release
       uses: actions/create-release@v1
-      id: create_release
+      id: create_release_step
       with:
         draft: false
         prerelease: false
@@ -22,6 +24,10 @@ jobs:
         tag_name: ${{ github.ref }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
+  build_windows:
+    runs-on: ubuntu-latest
+    needs: [create_release]
+    steps:
     - uses: actions/checkout@v2
     - name: PyInstaller Windows
       uses: JackMcKew/pyinstaller-action-windows@main
@@ -42,8 +48,8 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: Pollen_windows
-        path: downloaded_artifact
-    - run: 'cd downloaded_artifact && zip -p ../Pollen_windows.zip * && cd -'
+        path: downloaded_artifact_windows
+    - run: 'cd downloaded_artifact_windows && zip -p ../Pollen_windows.zip * && cd -'
       name: Zipping artifact
     - run: 'ls -R'
       name: Seeing files
@@ -52,7 +58,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
         asset_path: ./Pollen_windows.zip
         asset_name: Pollen_windows.zip
         asset_content_type: application/zip
