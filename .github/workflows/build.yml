@@ -68,9 +68,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: PyInstaller Linux
-      uses: JackMcKew/pyinstaller-action-linux@main
+      uses: JackMcKew/pyinstaller-action-linux@tkinter
       with:
         path: src
+        tkinter: true
     - uses: actions/upload-artifact@v3
       with:
         name: Pollen_linux
