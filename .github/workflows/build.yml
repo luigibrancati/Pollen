@@ -6,7 +6,7 @@ name: Pollen - Windows
 on:
   push:
     tags:
-      - v.**
+      - v**
   pull_request:
     branches: [main]
 
