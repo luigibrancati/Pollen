@@ -8,13 +8,13 @@ on:
     tags:
       - v**
 
-jobs:   
-  build_windows:
+jobs:
+  create_release:
     runs-on: ubuntu-latest
     steps:
     - name: create release
       uses: actions/create-release@v1
-      id: create_release
+      id: create_release_step
       with:
         draft: false
         prerelease: false
@@ -22,6 +22,10 @@ jobs:
         tag_name: ${{ github.ref }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
+  build_windows:
+    runs-on: ubuntu-latest
+    needs: [create_release]
+    steps:
     - uses: actions/checkout@v2
     - name: PyInstaller Windows
       uses: JackMcKew/pyinstaller-action-windows@main
@@ -42,8 +46,8 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: Pollen_windows
-        path: downloaded_artifact
-    - run: 'cd downloaded_artifact && zip -p ../Pollen_windows.zip * && cd -'
+        path: downloaded_artifact_windows
+    - run: 'cd downloaded_artifact_windows && zip -p ../Pollen_windows.zip * && cd -'
       name: Zipping artifact
     - run: 'ls -R'
       name: Seeing files
@@ -52,7 +56,45 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ needs.create_release.steps.create_release_step.outputs.upload_url }}
         asset_path: ./Pollen_windows.zip
         asset_name: Pollen_windows.zip
+        asset_content_type: application/zip
+  build_linux:
+    runs-on: ubuntu-latest
+    needs: [create_release]
+    steps:
+    - uses: actions/checkout@v2
+    - name: PyInstaller Linux
+      uses: JackMcKew/pyinstaller-action-linux@main
+      with:
+        path: src
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen_linux
+        path: src/dist/linux
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen_linux
+        path: configuration.json
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Pollen_linux
+        path: LEGGIMI.txt
+    - uses: actions/download-artifact@v3
+      with:
+        name: Pollen_linux
+        path: downloaded_artifact_linux
+    - run: 'cd downloaded_artifact_linux && zip -p ../Pollen_linux.zip * && cd -'
+      name: Zipping artifact
+    - run: 'ls -R'
+      name: Seeing files
+    - name: upload linux artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ needs.create_release.steps.create_release_step.outputs.upload_url }}
+        asset_path: ./Pollen_linux.zip
+        asset_name: Pollen_linux.zip
         asset_content_type: application/zip
